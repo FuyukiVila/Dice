@@ -1,0 +1,16 @@
+{
+    "Lua.diagnostics.globals": [
+        "msg_order",
+        "setGroupConf",
+        "getGroupConf",
+        "eventMsg",
+        "sleepTime",
+        "sendMsg",
+        "getUserToday",
+        "getUserConf",
+        "setUserConf",
+        "setUserToday",
+        "getCard",
+        "ranint"
+    ]
+}
