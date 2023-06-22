@@ -13,8 +13,9 @@ msg_order = {
     ["我的资金"] = "showMoney"
 }
 
-local MoneyLimit = 10
-local WaitTime = 30
+local MoneyLimit = 10 --低保领取限制
+local WaitTime = 30   --等待时间
+local betLimit = 5    --最低下注资金
 
 local init_deck = {
     [1] = 16,
@@ -90,7 +91,6 @@ function gameSet(msg)
         setGroupConf(msg.gid, "gameSet", true)
         return "游戏在本群已开启√"
     end
-    return ""
 end
 
 function gameStart(msg)
@@ -128,8 +128,8 @@ function gameStart(msg)
             return ""
         end
         setGroupConf(msg.gid, "gameTurn", index)
-        sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为5），" ..
-            WaitTime .. "s后未下注将自动下注最低筹码5",
+        sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" .. betLimit .. "），" ..
+            WaitTime .. "s后未下注将自动下注最低筹码" .. betLimit,
             msg.gid, 0)
         for i = 1, WaitTime, 1 do
             if (#getGroupConf(msg.gid, "gameMoney") >= index) then
@@ -138,9 +138,9 @@ function gameStart(msg)
             sleepTime(1000)
         end
         if (#getGroupConf(msg.gid, "gameMoney") < index) then
-            sendMsg("未下注，已自动为您下注5", msg.gid, 0)
+            sendMsg("未下注，已自动为您下注" .. betLimit, msg.gid, 0)
             local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
-            table.insert(gameMoney, 5)
+            table.insert(gameMoney, betLimit)
             setGroupConf(msg.gid, "gameMoney", gameMoney)
         end
     end
@@ -196,7 +196,7 @@ function gameJoin(msg)
     if (#gameHead >= 6) then
         return "人数已满×"
     end
-    if (getUserConf(msg.uid, "money", 0) < 5) then
+    if (getUserConf(msg.uid, "money", 0) < betLimit) then
         return "资金不足×"
     end
     table.insert(gameHead, msg.uid)
@@ -234,8 +234,8 @@ function bet(msg)
     local target = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"下注" + 1)
     local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
     if (tonumber(target) ~= nil) then
-        if (tonumber(target) < 5) then
-            return "至少需要下注5"
+        if (tonumber(target) < betLimit) then
+            return "至少需要下注" .. betLimit
         elseif (getUserConf(msg.uid, "money", 0) < tonumber(target)) then
             return "资金不足×"
         else
