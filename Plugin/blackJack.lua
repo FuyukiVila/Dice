@@ -4,13 +4,13 @@ msg_order = {
     ["21点设置"] = "gameSet",
     ["开始21点"] = "gameStart",
     ["加入"] = "gameJoin",
+    ["开始"] = "gameQuickStart",
+    ["下注"] = "bet",
     ["强制结束游戏"] = "gameExit",
     ["查看明牌"] = "showCard",
     ["查看底牌"] = "showHoleCard",
     ["领取低保"] = "getMoney",
-    ["我的资金"] = "showMoney",
-    ["开始"] = "gameNow",
-    ["下注"] = "bet"
+    ["我的资金"] = "showMoney"
 }
 
 local MoneyLimit = 10
@@ -52,9 +52,9 @@ function table.sum(tab)
     return res
 end
 
-function table.find(tab, fkey)
+function table.find(tab, fv)
     for key, value in pairs(tab) do
-        if (value == fkey) then
+        if (value == fv) then
             return key
         end
     end
@@ -62,7 +62,7 @@ function table.find(tab, fkey)
 end
 
 function numtoCard(num)
-    if(type(num)~="number") then
+    if (type(num) ~= "number") then
         return ''
     end
     if (num == 1) then
@@ -79,7 +79,7 @@ function numtoCard(num)
 end
 
 function gameSet(msg)
-    if(msg.gid=='') then
+    if (msg.gid == '') then
         return "私聊窗口不能玩捏×"
     end
     local target = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"21点设置" + 1)
@@ -100,23 +100,19 @@ function gameStart(msg)
     if (getGroupConf(msg.gid, "gameSet", 0) == 0) then
         return "本群未开启游戏，请输入《游戏设置开启》指令开启×"
     end
-    if (getGroupConf(msg.gid, "gameStart", 0) == 1) then
+    if (getGroupConf(msg.gid, "gameWait", 0) == 1) then
         return "本群游戏已开始，请等待该轮游戏结束或输入《强制结束游戏》指令关闭游戏进程×"
     end
-    setGroupConf(msg.gid, "gameHead", {})
-    setGroupConf(msg.gid, "gameMoney", {})
-    setGroupConf(msg.gid, "deck", init_deck)
-    setGroupConf(msg.gid, "gameNow", 0)
-    setGroupConf(msg.gid, "gameStart", 1)
-    setGroupConf(msg.gid, "gameTurn", 0)
+    gameExit(msg) --游戏初始化
+    setGroupConf(msg.gid, "gameWait", 1)
     sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
         msg.gid, 0)
     eventMsg("加入", msg.gid, msg.uid)
     for i = 1, WaitTime, 1 do
-        if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+        if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
             return ""
         end
-        if (getGroupConf(msg.gid, "gameNow", 0) == 1) then
+        if (getGroupConf(msg.gid, "gameStart", 0) == 1) then
             break
         end
         sleepTime(1000)
@@ -125,10 +121,10 @@ function gameStart(msg)
         gameExit(msg)
         return "游戏人数不足2人，本轮游戏结束×"
     end
-    setGroupConf(msg.gid, "gameNow", 1)
+    setGroupConf(msg.gid, "gameStart", 1)
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     for index, player in pairs(gameHead) do
-        if (getGroupConf(msg.gid, "gameNow", 0) == 0) then
+        if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
         end
         setGroupConf(msg.gid, "gameTurn", index)
@@ -149,7 +145,7 @@ function gameStart(msg)
         end
     end
     for index, player in pairs(gameHead) do
-        if (getGroupConf(msg.gid, "gameNow", 0) == 0) then
+        if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
         end
         setUserConf(player, "cards", {})
@@ -164,20 +160,20 @@ function gameStart(msg)
     sleepTime(1000)
 end
 
-function gameNow(msg)
+function gameQuickStart(msg)
     if (msg.fromMsg ~= "开始") then
         return ""
     end
     if (getGroupConf(msg.gid, "gameSet", 0) == 0) then
         return ""
     end
-    if (getGroupConf(msg.gid, "gameNow", 0) == 1) then
+    if (getGroupConf(msg.gid, "gameStart", 0) == 1) then
         return ""
     end
-    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+    if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
         return ""
     end
-    setGroupConf(msg.gid, "gameNow", 1)
+    setGroupConf(msg.gid, "gameStart", 1)
 end
 
 function gameJoin(msg)
@@ -187,14 +183,14 @@ function gameJoin(msg)
     if (msg.gid == '') then
         return "私聊窗口不能玩捏×"
     end
-    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+    if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
         return ""
     end
-    if (getGroupConf(msg.gid, "gameNow", 0) == 1) then
+    if (getGroupConf(msg.gid, "gameStart", 0) == 1) then
         return "本群游戏已开始，请等待该轮游戏结束或输入《强制结束游戏》指令关闭游戏进程×"
     end
-    local gameHead = getGroupConf(msg.gid,"gameHead",{})
-    if (table.find(gameHead,msg.uid) ~= nil) then
+    local gameHead = getGroupConf(msg.gid, "gameHead", {})
+    if (table.find(gameHead, msg.uid) ~= nil) then
         return "您已加入本轮游戏×"
     end
     if (#gameHead >= 6) then
@@ -203,19 +199,19 @@ function gameJoin(msg)
     if (getUserConf(msg.uid, "money", 0) < 5) then
         return "资金不足×"
     end
-    table.insert(gameHead,msg.uid)
+    table.insert(gameHead, msg.uid)
     setGroupConf(msg.gid, "gameHead", gameHead)
     local res = ""
-    for index, value in pairs(gameHead) do
-        res = res .. '[CQ:at,qq='..value .. '] '
+    for index, player in pairs(gameHead) do
+        res = res .. '[CQ:at,qq=' .. player .. '] '
     end
     return "成功加入游戏，当前玩家为：" .. res
 end
 
 function gameExit(msg)
     setGroupConf(msg.gid, "gameHead", {})
+    setGroupConf(msg.gid, "gameWait", 0)
     setGroupConf(msg.gid, "gameStart", 0)
-    setGroupConf(msg.gid, "gameNow", 0)
     setGroupConf(msg.gid, "deck", init_deck)
     setGroupConf(msg.gid, "gameTurn", 0)
     setGroupConf(msg.gid, "gameMoney", {})
@@ -223,7 +219,7 @@ function gameExit(msg)
 end
 
 function bet(msg)
-    if (getGroupConf(msg.gid, "gameNow", 0) == 0) then
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
         return "本轮游戏未开始×"
     end
     if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) == nil) then
@@ -232,11 +228,11 @@ function bet(msg)
     if (#getGroupConf(msg.gid, "gameMoney", {}) == #getGroupConf(msg.gid, "gameHead", {})) then
         return "下注已结束×"
     end
-    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) ~= getGroupConf(msg.gid,"gameTurn",0)) then
+    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) ~= getGroupConf(msg.gid, "gameTurn", 0)) then
         return "还没轮到您×"
     end
     local target = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"下注" + 1)
-    local gameMoney = getGroupConf(msg.gid, "gameMoney",{})
+    local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
     if (tonumber(target) ~= nil) then
         if (tonumber(target) < 5) then
             return "至少需要下注5"
@@ -244,8 +240,8 @@ function bet(msg)
             return "资金不足×"
         else
             table.insert(gameMoney, tonumber(target))
-            setGroupConf(msg.gid,"gameMoney", gameMoney)
-            return "您已成功下注"..target
+            setGroupConf(msg.gid, "gameMoney", gameMoney)
+            return "您已成功下注" .. target
         end
     end
 end
@@ -263,11 +259,11 @@ function getMoney(msg)
 end
 
 function showMoney(msg)
-    return "您的资金为:"..getUserConf(msg.uid,"money",0)
+    return "您的资金为:" .. getUserConf(msg.uid, "money", 0)
 end
 
 function drawCard(msg, player)
-    if (getGroupConf(msg.gid, "gameNow", 0) == 0) then
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
         return "游戏未开始×"
     end
     local cards = getUserConf(player, "cards", {})
@@ -283,14 +279,14 @@ function drawCard(msg, player)
                 setGroupConf(msg.gid, "deck", deck)
                 table.insert(cards, i)
                 setUserConf(player, "cards", cards)
-                return "你抽到的卡是:"..numtoCard(i)
+                return "你抽到的卡是:" .. numtoCard(i)
             end
         end
     end
 end
 
 function showCard(msg)
-    if (getGroupConf(msg.gid, "gameNow", 0) == 0) then
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
         return "游戏未开始×"
     end
     if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) == nil) then
@@ -298,7 +294,7 @@ function showCard(msg)
     end
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     local res = ""
-    for key, player in pairs(gameHead) do
+    for index, player in pairs(gameHead) do
         local cards = "暗牌 " .. table.concat(getUserConf(player, "cards", {}), ' ', 2)
         res = res .. '[CQ:at,qq=' .. player .. ']:' .. cards .. '\n'
     end
@@ -306,12 +302,12 @@ function showCard(msg)
 end
 
 function showHoleCard(msg)
-    if (getGroupConf(msg.gid, "gameNow", 0) == 0) then
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
         return "游戏未开始×"
     end
-    if(table.find(getGroupConf(msg.gid, "gameHead",{}), msg.uid)==nil) then
+    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) == nil) then
         return "您不是本轮游戏的玩家×"
     end
-    local card = getUserConf(msg.uid,"cards",{})[1]
-    sendMsg("您的底牌是:"..card, 0, msg.uid)
+    local card = getUserConf(msg.uid, "cards", {})[1]
+    sendMsg("您的底牌是:" .. card, 0, msg.uid)
 end
