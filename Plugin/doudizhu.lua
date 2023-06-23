@@ -222,9 +222,9 @@ function init(msg)--初始化（洗牌，发牌）
     setUserConf(player[3],"puke_cache",{})--删除已选的牌
     setGroupConf(msg.fromGroup,"地主牌",sort(playercard[4]))--存地主牌
     eventMsg("查看手牌", msg.fromGroup, player[1])
-    sleepTime(2000)
+    sleepTime(1000)
     eventMsg("查看手牌", msg.fromGroup, player[2])
-    sleepTime(2000)
+    sleepTime(1000)
     eventMsg("查看手牌", msg.fromGroup, player[3])--给玩家看自己的手牌
     setGroupConf(msg.fromGroup,"斗地主状态",1)--游戏开始
     setGroupConf(msg.fromGroup, "dizhucount", 1)--可以抢地主了

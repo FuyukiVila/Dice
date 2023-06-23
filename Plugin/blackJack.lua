@@ -144,7 +144,7 @@ function gameStart(msg)
             setGroupConf(msg.gid, "gameMoney", gameMoney)
         end
     end
-    for index, player in pairs(gameHead) do
+    for index, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
         end
@@ -156,7 +156,7 @@ function gameStart(msg)
     end
     eventMsg("查看明牌", msg.gid, msg.uid)
     sleepTime(1000)
-    sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]")
+    sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]", msg.gid, 0)
     sleepTime(1000)
 end
 
@@ -294,8 +294,13 @@ function showCard(msg)
     end
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     local res = ""
-    for index, player in pairs(gameHead) do
-        local cards = "暗牌 " .. table.concat(getUserConf(player, "cards", {}), ' ', 2)
+    for index, player in ipairs(gameHead) do
+        cards = "暗牌 "
+        for index, card in ipairs(getUserConf(player, "cards", {})) do
+            if (index ~= 1) then
+                cards = cards .. numtoCard(card) .. " "
+            end
+        end
         res = res .. '[CQ:at,qq=' .. player .. ']:' .. cards .. '\n'
     end
     return res
@@ -309,5 +314,5 @@ function showHoleCard(msg)
         return "您不是本轮游戏的玩家×"
     end
     local card = getUserConf(msg.uid, "cards", {})[1]
-    sendMsg("您的底牌是:" .. card, 0, msg.uid)
+    sendMsg("您的底牌是:" .. numtoCard(card), 0, msg.uid)
 end
