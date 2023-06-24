@@ -10,7 +10,9 @@ msg_order = {
     ["查看明牌"] = "showCard",
     ["查看底牌"] = "showHoleCard",
     ["领取低保"] = "getMoney",
-    ["我的资金"] = "showMoney"
+    ["我的资金"] = "showMoney",
+    ["要牌"] = "hit",
+    ["停牌"] = "stand",
 }
 
 local MoneyLimit = 10 --低保领取限制
@@ -60,6 +62,25 @@ function table.find(tab, fv)
         end
     end
     return nil
+end
+
+local maxn = 0
+function getMaxn(tab, index, res)
+    if (index == 1) then
+        maxn = 0
+    end
+    if (index > #tab) then
+        if (res <= 21) then
+            maxn = math.max(maxn, res)
+        end
+    else
+        if (tab[index] ~= 1) then
+            getMaxn(tab, index + 1, res + math.min(tab[index], 10))
+        else
+            getMaxn(tab, index + 1, res + 1)
+            getMaxn(tab, index + 1, res + 11)
+        end
+    end
 end
 
 function numtoCard(num)
@@ -122,10 +143,18 @@ function gameStart(msg)
         return "游戏人数不足2人，本轮游戏结束×"
     end
     setGroupConf(msg.gid, "gameStart", 1)
+    sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]", msg.gid, 0)
+    sleepTime(2000)
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
-    for index, player in pairs(gameHead) do
+    for index, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
+        end
+        if (index == 1) then
+            local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
+            table.insert(gameMoney, 0)
+            setGroupConf(msg.gid, "gameMoney", gameMoney)
+            goto continue
         end
         setGroupConf(msg.gid, "gameTurn", index)
         sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" .. betLimit .. "），" ..
@@ -143,6 +172,7 @@ function gameStart(msg)
             table.insert(gameMoney, betLimit)
             setGroupConf(msg.gid, "gameMoney", gameMoney)
         end
+        ::continue::
     end
     for index, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
@@ -152,12 +182,83 @@ function gameStart(msg)
         drawCard(msg, player)
         drawCard(msg, player)
         eventMsg("查看底牌", msg.gid, player)
-        sleepTime(1000)
+        sleepTime(2000)
     end
     eventMsg("查看明牌", msg.gid, msg.uid)
-    sleepTime(1000)
-    sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]", msg.gid, 0)
-    sleepTime(1000)
+    sleepTime(2000)
+    --闲家要牌
+    for index, player in ipairs(gameHead) do
+        if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+            return ""
+        end
+        if (index == 1) then
+            goto continue
+        end
+        sendMsg("请闲家[CQ:at, qq = " .. player .. "]选择要牌还是停牌", msg.gid, 0)
+        ::again::
+        setGroupConf(msg.gid, "gameTurn", index)
+        setUserConf(player, "stand", 0)
+        setUserConf(player, "hit", 0)
+        if (#getUserConf(player, "cards", {}) >= 5) then
+            setUserConf(player, "stand", 1)
+            goto continue
+        end
+        sleepTime(3000)
+        sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid,
+            0)
+        for i = 1, WaitTime, 1 do
+            if (getUserConf(player, "hit", 0) == 1) then
+                goto again
+            end
+            if (getUserConf(player, "stand", 0) == 1) then
+                goto continue
+            end
+            sleepTime(1000)
+        end
+        ::continue::
+    end
+    --庄家要牌
+    sendMsg("庄家的底牌是" .. numtoCard(getUserConf(msg.uid, "cards", {})[1]), msg.gid, 0)
+    sendMsg("请庄家[CQ:at, qq = " .. msg.uid .. "]选择要牌还是停牌", msg.gid, 0)
+    ::again::
+    setGroupConf(msg.gid, "gameTurn", 1)
+    setUserConf(msg.uid, "stand", 0)
+    setUserConf(msg.uid, "hit", 0)
+    -- getMaxn(getUserConf(msg.uid, "cards", {}), 1, 0)
+    if (#getUserConf(msg.uid, "cards", {}) >= 5) then
+        setUserConf(msg.uid, "stand", 1)
+        goto continue
+    end
+    -- if (maxn == 0) then
+    --     sendMsg("庄家爆牌自动停牌", msg.gid, 0)
+    --     setUserConf(msg.uid, "stand", 1)
+    --     goto continue
+    -- end
+    -- if (maxn >= 17) then
+    --     sendMsg("庄家点数大于等于17点自动停牌", msg.gid, 0)
+    --     setUserConf(msg.uid, "stand", 1)
+    --     goto continue
+    -- end
+    -- if (maxn < 16) then
+    --     sendMsg("庄家点数小于16点自动要牌", msg.gid, 0)
+    --     eventMsg("要牌", msg.gid, msg.uid)
+    --     goto again
+    -- end
+    sleepTime(3000)
+    sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
+    for i = 1, WaitTime, 1 do
+        if (getUserConf(msg.uid, "hit", 0) == 1) then
+            goto again
+        end
+        if (getUserConf(msg.uid, "stand", 0) == 1) then
+            goto continue
+        end
+        sleepTime(1000)
+    end
+    ::continue::
+    --结算
+    local res = gameEnd(msg)
+    return res
 end
 
 function gameQuickStart(msg)
@@ -202,7 +303,7 @@ function gameJoin(msg)
     table.insert(gameHead, msg.uid)
     setGroupConf(msg.gid, "gameHead", gameHead)
     local res = ""
-    for index, player in pairs(gameHead) do
+    for index, player in ipairs(gameHead) do
         res = res .. '[CQ:at,qq=' .. player .. '] '
     end
     return "成功加入游戏，当前玩家为：" .. res
@@ -216,6 +317,57 @@ function gameExit(msg)
     setGroupConf(msg.gid, "gameTurn", 0)
     setGroupConf(msg.gid, "gameMoney", {})
     return "游戏已强制结束×"
+end
+
+function gameEnd(msg)
+    local gameHead = getGroupConf(msg.gid, "gameHead", {})
+    local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
+    local gameResult = {}
+    local res = ""
+    for index, player in ipairs(gameHead) do
+        local xMoney = getUserConf(player, "money", 0)
+        local zMoney = getUserConf(msg.uid, "money", 0)
+        local cards = getUserConf(player, "cards", {})
+        res = res .. "[CQ:at,qq=" .. player .. "]的牌为："
+        for i, card in ipairs(cards) do
+            res = res .. numtoCard(card) .. ' '
+        end
+        getMaxn(cards, 1, 0)
+        res = res .. "最终值为" .. maxn .. ' '
+        table.insert(gameResult, maxn)
+        if (index ~= 1) then
+            if (gameResult[1] == 21 and #getUserConf(gameHead[1], "cards", {}) == 2 and gameResult[index] == 21 and #getUserConf(player, "cards", {}) == 2) then
+                res = res .. "俩家黑杰克，平局"
+                --庄家黑杰克闲家黑杰克
+            elseif (gameResult[1] == 21 and #getUserConf(gameHead[1], "cards", {}) == 2) then
+                res = res .. "庄家黑杰克，闲家输，失去" .. gameMoney[index]
+                setUserConf(player, "money", xMoney - gameMoney[index])
+                setUserConf(msg.uid, "money", zMoney + gameMoney[index])
+                --庄家黑杰克
+            elseif (gameResult[index] == 21 and #getUserConf(player, "cards", {}) == 2) then
+                res = res .. "闲家黑杰克，获得1.5倍注资" .. gameMoney[index] * 1.5
+                setUserConf(player, "money", xMoney + gameMoney[index] * 1.5)
+                setUserConf(msg.uid, "money", zMoney - gameMoney[index] * 1.5)
+                --闲家黑杰克
+            elseif (gameResult[1] > gameResult[index]) then
+                res = res .. "闲家输，失去" .. gameMoney[index]
+                setUserConf(player, "money", xMoney - gameMoney[index])
+                setUserConf(msg.uid, "money", zMoney + gameMoney[index])
+                --闲家输
+            elseif (gameResult[1] < gameResult[index]) then
+                res = res .. "闲家赢，获得" .. gameMoney[index]
+                setUserConf(player, "money", xMoney + gameMoney[index])
+                setUserConf(msg.uid, "money", zMoney - gameMoney[index])
+                --闲家赢
+            elseif (gameResult[1] == gameResult[index]) then
+                res = res .. "平局"
+                --平局
+            end
+        end
+        res = res .. '\n'
+    end
+    gameExit(msg)
+    return res
 end
 
 function bet(msg)
@@ -279,7 +431,7 @@ function drawCard(msg, player)
                 setGroupConf(msg.gid, "deck", deck)
                 table.insert(cards, i)
                 setUserConf(player, "cards", cards)
-                return "你抽到的卡是:" .. numtoCard(i)
+                return "您抽到的牌是:" .. numtoCard(i)
             end
         end
     end
@@ -295,7 +447,7 @@ function showCard(msg)
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     local res = ""
     for index, player in ipairs(gameHead) do
-        cards = "暗牌 "
+        cards = "底牌 "
         for index, card in ipairs(getUserConf(player, "cards", {})) do
             if (index ~= 1) then
                 cards = cards .. numtoCard(card) .. " "
@@ -315,4 +467,39 @@ function showHoleCard(msg)
     end
     local card = getUserConf(msg.uid, "cards", {})[1]
     sendMsg("您的底牌是:" .. numtoCard(card), 0, msg.uid)
+end
+
+function hit(msg)
+    if (msg.fromMsg ~= "要牌") then
+        return ""
+    end
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+        return ""
+    end
+    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) == nil) then
+        return "您不是本轮游戏的玩家×"
+    end
+    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) ~= getGroupConf(msg.gid, "gameTurn", 0)) then
+        return "还没轮到您×"
+    end
+    setUserConf(msg.uid, "hit", 1)
+    local res = drawCard(msg, msg.uid)
+    return res
+end
+
+function stand(msg)
+    if (msg.fromMsg ~= "停牌") then
+        return ""
+    end
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+        return ""
+    end
+    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) == nil) then
+        return "您不是本轮游戏的玩家×"
+    end
+    if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) ~= getGroupConf(msg.gid, "gameTurn", 0)) then
+        return "还没轮到您×"
+    end
+    setUserConf(msg.uid, "stand", 1)
+    return "您已停牌"
 end

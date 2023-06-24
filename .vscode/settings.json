@@ -8,7 +8,8 @@
         "setUserConf",
         "getUserConf",
         "setUserToday",
-        "ranint"
+        "ranint",
+        "getUserToday"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
