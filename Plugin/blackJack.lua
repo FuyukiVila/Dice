@@ -2,7 +2,7 @@ require("class")
 
 msg_order = {
     ["21点设置"] = "gameSet",
-    ["开始21点"] = "gameStart",
+    ["开盘21点"] = "gameStart",
     ["加入"] = "gameJoin",
     ["开始"] = "gameQuickStart",
     ["下注"] = "bet",
@@ -12,10 +12,11 @@ msg_order = {
     ["领取低保"] = "getMoney",
     ["我的资金"] = "showMoney",
     ["要牌"] = "hit",
-    ["停牌"] = "stand",
+    ["停牌"] = "stand"
 }
 
-local MoneyLimit = 10 --低保领取限制
+local MoneyLimit = 20 --低保领取限制
+local MoneyTime = 2   --低保领取次数限制
 local WaitTime = 30   --等待时间
 local betLimit = 5    --最低下注资金
 
@@ -124,6 +125,9 @@ function gameStart(msg)
     if (getGroupConf(msg.gid, "gameWait", 0) == 1) then
         return "本群游戏已开始，请等待该轮游戏结束或输入《强制结束游戏》指令关闭游戏进程×"
     end
+    if (getUserConf(msg.uid, "money", 0) < betLimit) then
+        return "您的资金不足以开盘×"
+    end
     gameExit(msg) --游戏初始化
     setGroupConf(msg.gid, "gameWait", 1)
     sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
@@ -161,6 +165,9 @@ function gameStart(msg)
             WaitTime .. "s后未下注将自动下注最低筹码" .. betLimit,
             msg.gid, 0)
         for i = 1, WaitTime, 1 do
+            if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+                return ""
+            end
             if (#getGroupConf(msg.gid, "gameMoney") >= index) then
                 break
             end
@@ -194,7 +201,7 @@ function gameStart(msg)
         if (index == 1) then
             goto continue
         end
-        sendMsg("请闲家[CQ:at, qq = " .. player .. "]选择要牌还是停牌", msg.gid, 0)
+        sendMsg("请闲家[CQ:at,qq=" .. player .. "]选择要牌还是停牌", msg.gid, 0)
         ::again::
         setGroupConf(msg.gid, "gameTurn", index)
         setUserConf(player, "stand", 0)
@@ -203,10 +210,13 @@ function gameStart(msg)
             setUserConf(player, "stand", 1)
             goto continue
         end
-        sleepTime(3000)
+        sleepTime(2000)
         sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid,
             0)
         for i = 1, WaitTime, 1 do
+            if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+                return ""
+            end
             if (getUserConf(player, "hit", 0) == 1) then
                 goto again
             end
@@ -218,8 +228,11 @@ function gameStart(msg)
         ::continue::
     end
     --庄家要牌
+    if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+        return ""
+    end
     sendMsg("庄家的底牌是" .. numtoCard(getUserConf(msg.uid, "cards", {})[1]), msg.gid, 0)
-    sendMsg("请庄家[CQ:at, qq = " .. msg.uid .. "]选择要牌还是停牌", msg.gid, 0)
+    sendMsg("请庄家[CQ:at,qq=" .. msg.uid .. "]选择要牌还是停牌", msg.gid, 0)
     ::again::
     setGroupConf(msg.gid, "gameTurn", 1)
     setUserConf(msg.uid, "stand", 0)
@@ -244,9 +257,12 @@ function gameStart(msg)
     --     eventMsg("要牌", msg.gid, msg.uid)
     --     goto again
     -- end
-    sleepTime(3000)
+    sleepTime(2000)
     sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
     for i = 1, WaitTime, 1 do
+        if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
+            return ""
+        end
         if (getUserConf(msg.uid, "hit", 0) == 1) then
             goto again
         end
@@ -399,14 +415,14 @@ function bet(msg)
 end
 
 function getMoney(msg)
-    if (getUserToday(msg.uid, "getMoney", 0) == 1) then
+    if (getUserToday(msg.uid, "getMoney", 0) >= MoneyTime) then
         return "您今天已经领取低保了×"
     end
     if (getUserConf(msg.uid, "money", 0) > MoneyLimit) then
         return "您的资金高于低保条件×"
     end
-    setUserToday(msg.uid, "getMoney", 1)
-    setUserConf(msg.uid, "money", getUserConf(msg.uid, "money", 0) + 10)
+    setUserToday(msg.uid, "getMoney", getUserToday(msg.uid, "getMoney", 0) + 1)
+    setUserConf(msg.uid, "money", getUserConf(msg.uid, "money", 0) + MoneyLimit)
     return "成功领取低保√，玩的愉快~"
 end
 
