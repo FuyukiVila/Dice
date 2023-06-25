@@ -4,7 +4,7 @@ msg_order = {
     ["拒绝"] = "refuse"
 }
 
-local workLimit = 2
+local workLimit = 5
 
 local getAtQQ = function(str)
     local n = tonumber(str)
@@ -23,31 +23,31 @@ function atQQ(qq)
 end
 
 function work(msg)
+    local boss = getAtQQ(string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"打工" + 1))
     if (msg.gid == "") then
         return "私聊窗口不能打工捏×"
     end
     if (getUserToday(msg.uid, "work", 0) >= workLimit) then
         return "您今天不能再打工了×"
     end
-    if (getUserConf(msg.uid, "work", 0) >= 20) then
-        return "这么有钱还打工？"
+    if (getUserConf(msg.uid, "money", 0) >= getUserConf(boss,"money",0)) then
+        return "给穷鬼打工？"
     end
-    local boss = getAtQQ(string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"打工" + 1))
     if (tonumber(boss) == nil) then
         return ""
     end
     if (getUserConf(boss, "money", 0) < 50) then
         return "老板也没钱捏×"
     end
-    setUserToday(msg.uid, "work", getUserToday(msg.uid, "work", 0) + 1)
     setUserConf(boss, "request", 1)
     setUserConf(boss, "accept", 0)
     setUserConf(boss, "refuse", 0)
     sendMsg(atQQ(msg.uid) .. "向" .. atQQ(boss) .. "发起打工请求，请在30s内回复《同意》或《拒绝》，否则默认拒绝",
         msg.gid, 0)
     for i = 1, 30, 1 do
-        if (getUserConf(boss, 'refuse', 0) == 1) then
+        if (getUserConf(boss, 'accept', 0) == 1) then
             setUserConf(boss, "request", 0)
+            setUserToday(msg.uid, "work", getUserToday(msg.uid, "work", 0) + 1)
             local res
             if (ranint(1, 100) <= 5) then
                 res = "老板很中意你，你变成了老板的星怒，并将一半的财产给了你"
@@ -59,7 +59,7 @@ function work(msg)
                 res = drawDeck(0, msg.uid, "_work")
                 local money = getUserConf(boss, "money", 0)
                 local getMoney = ranint(10, math.min(100, money * 2))
-                res = res .. "你为老板创造了" .. getMoney .. "的价值\n"
+                res = res .. "，你为老板创造了" .. getMoney .. "的价值\n"
                 local r = ranint(1, 100)
                 if r <= 5 then
                     res = res .. "老板大发慈悲，把钱都给了你"
@@ -82,7 +82,7 @@ function work(msg)
                 end
                 return res
             end
-        elseif (getUserConf(boss, 'accept', 0) == 1) then
+        elseif (getUserConf(boss, 'refuse', 0) == 1) then
             setUserConf(boss, "request", 0)
             return "你的简历被扔进人才市场了"
         end
