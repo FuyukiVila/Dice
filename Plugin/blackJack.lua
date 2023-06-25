@@ -1,5 +1,3 @@
-require("class")
-
 msg_order = {
     ["21点设置"] = "gameSet",
     ["开盘21点"] = "gameStart",
@@ -125,7 +123,7 @@ function gameStart(msg)
     if (getGroupConf(msg.gid, "gameWait", 0) == 1) then
         return "本群游戏已开始，请等待该轮游戏结束或输入《强制结束游戏》指令关闭游戏进程×"
     end
-    if (getUserConf(msg.uid, "money", 0) < betLimit) then
+    if (getUserConf(msg.uid, "money", 0) < betLimit * 4) then
         return "您的资金不足以开盘×"
     end
     gameExit(msg) --游戏初始化
@@ -149,6 +147,7 @@ function gameStart(msg)
     setGroupConf(msg.gid, "gameStart", 1)
     sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]", msg.gid, 0)
     sleepTime(2000)
+    betMaxn = getUserConf(msg.uid, "money", 0) / 2
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     for index, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
@@ -161,7 +160,8 @@ function gameStart(msg)
             goto continue
         end
         setGroupConf(msg.gid, "gameTurn", index)
-        sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" .. betLimit .. "），" ..
+        sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" ..
+            betLimit .. "，最多为" .. betMaxn .. "），" ..
             WaitTime .. "s后未下注将自动下注最低筹码" .. betLimit,
             msg.gid, 0)
         for i = 1, WaitTime, 1 do
@@ -404,6 +404,8 @@ function bet(msg)
     if (tonumber(target) ~= nil) then
         if (tonumber(target) < betLimit) then
             return "至少需要下注" .. betLimit
+        elseif (tonumber(target) > betMaxn) then
+            return "下注资金不得超过" .. betMaxn
         elseif (getUserConf(msg.uid, "money", 0) < tonumber(target)) then
             return "资金不足×"
         else
