@@ -1,3 +1,9 @@
+--[[
+BlackJack插件
+By Fuyuki_Vila(QQ 1642421711)
+2023/6/22
+]]
+
 msg_order = {
     ["21点设置"] = "gameSet",
     ["开盘21点"] = "gameStart",
