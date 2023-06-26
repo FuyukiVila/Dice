@@ -34,16 +34,6 @@ local init_deck = {
     [13] = 16
 }
 
--- function table.length(tab)
---     local num = 0
---     for i, j in pairs(tab) do
---         if (j ~= nil) then
---             num = num + 1
---         end
---     end
---     return num
--- end
-
 function table.sum(tab)
     local res = 0
     for i, j in pairs(tab) do
@@ -105,10 +95,10 @@ function gameSet(msg)
     end
     local target = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"21点设置" + 1)
     if (target == "关闭") then
-        setGroupConf(msg.gid, "gameSet", false)
+        setGroupConf(msg.gid, "gameSet", 0)
         return "游戏在本群已关闭√"
     elseif (target == "开启") then
-        setGroupConf(msg.gid, "gameSet", true)
+        setGroupConf(msg.gid, "gameSet", 1)
         return "游戏在本群已开启√"
     end
 end
@@ -238,26 +228,10 @@ function gameStart(msg)
     setGroupConf(msg.gid, "gameTurn", 1)
     setUserConf(msg.uid, "stand", 0)
     setUserConf(msg.uid, "hit", 0)
-    -- getMaxn(getUserConf(msg.uid, "cards", {}), 1, 0)
     if (#getUserConf(msg.uid, "cards", {}) >= 5) then
         setUserConf(msg.uid, "stand", 1)
         goto continue
     end
-    -- if (maxn == 0) then
-    --     sendMsg("庄家爆牌自动停牌", msg.gid, 0)
-    --     setUserConf(msg.uid, "stand", 1)
-    --     goto continue
-    -- end
-    -- if (maxn >= 17) then
-    --     sendMsg("庄家点数大于等于17点自动停牌", msg.gid, 0)
-    --     setUserConf(msg.uid, "stand", 1)
-    --     goto continue
-    -- end
-    -- if (maxn < 16) then
-    --     sendMsg("庄家点数小于16点自动要牌", msg.gid, 0)
-    --     eventMsg("要牌", msg.gid, msg.uid)
-    --     goto again
-    -- end
     sleepTime(2000)
     sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
     for i = 1, WaitTime, 1 do
