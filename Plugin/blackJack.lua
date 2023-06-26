@@ -93,6 +93,9 @@ function gameSet(msg)
     if (msg.gid == '') then
         return "私聊窗口不能玩捏×"
     end
+    if (getUserConf(msg.fromQQ, "trust", 0) < 4 and not (getGroupConf(msg.fromGroup, "auth#" .. msg.fromQQ, 1) > 1)) then
+        return "请让群管理发送该指令×"
+    end
     local target = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"21点设置" + 1)
     if (target == "关闭") then
         setGroupConf(msg.gid, "gameSet", 0)
