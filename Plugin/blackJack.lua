@@ -135,7 +135,7 @@ function gameStart(msg)
         if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
             return ""
         end
-        if (getGroupConf(msg.gid, "gameStart", 0) == 1) then
+        if (getGroupConf(msg.gid, "gameStart", 0) == 1 or #getGroupConf(msg.gid, "gameHead", {}) >= 6) then
             break
         end
         sleepTime(1000)
@@ -147,7 +147,8 @@ function gameStart(msg)
     setGroupConf(msg.gid, "gameStart", 1)
     sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]", msg.gid, 0)
     sleepTime(2000)
-    betMaxn = getUserConf(msg.uid, "money", 0) / 2
+    local betMaxn = getUserConf(msg.uid, "money", 0) / 2
+    setGroupConf(msg.gid, "betMaxn", betMaxn)
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     for index, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
@@ -401,6 +402,7 @@ function bet(msg)
     end
     local target = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"下注" + 1)
     local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
+    local betMaxn = getGroupConf(msg.gid, "betMaxn", 0)
     if (tonumber(target) ~= nil) then
         if (tonumber(target) < betLimit) then
             return "至少需要下注" .. betLimit
