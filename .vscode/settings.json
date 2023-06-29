@@ -10,7 +10,8 @@
         "setUserToday",
         "ranint",
         "getUserToday",
-        "drawDeck"
+        "drawDeck",
+        "getDiceQQ"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
