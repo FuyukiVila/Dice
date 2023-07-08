@@ -78,7 +78,7 @@ function getMaxn(tab, index, res)
     end
 end
 
-function numtoCard(num)
+function numToCard(num)
     if (type(num) ~= "number") then
         return ''
     end
@@ -128,7 +128,7 @@ function gameStart(msg)
     gameExit(msg) --游戏初始化
     setGroupConf(msg.gid, "gameWait", 1)
     sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
-        msg.gid, 0)
+            msg.gid, 0)
     eventMsg("加入", msg.gid, msg.uid)
     for i = 1, WaitTime, 1 do
         if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
@@ -161,9 +161,9 @@ function gameStart(msg)
         end
         setGroupConf(msg.gid, "gameTurn", index)
         sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" ..
-            BetLimit .. "，最多为" .. betMaxn .. "），" ..
-            WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
-            msg.gid, 0)
+                BetLimit .. "，最多为" .. betMaxn .. "），" ..
+                WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
+                msg.gid, 0)
         for i = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
@@ -179,7 +179,7 @@ function gameStart(msg)
             table.insert(gameMoney, BetLimit)
             setGroupConf(msg.gid, "gameMoney", gameMoney)
         end
-        ::continue::
+        :: continue ::
     end
     for index, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
@@ -202,7 +202,7 @@ function gameStart(msg)
             goto continue
         end
         sendMsg("请闲家[CQ:at,qq=" .. player .. "]选择要牌还是停牌", msg.gid, 0)
-        ::again::
+        :: again ::
         setGroupConf(msg.gid, "gameTurn", index)
         setUserConf(player, "stand", 0)
         setUserConf(player, "hit", 0)
@@ -212,7 +212,7 @@ function gameStart(msg)
         end
         sleepTime(2000)
         sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid,
-            0)
+                0)
         for i = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
@@ -225,15 +225,15 @@ function gameStart(msg)
             end
             sleepTime(1000)
         end
-        ::continue::
+        :: continue ::
     end
     --庄家要牌
     if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
         return ""
     end
-    sendMsg("庄家的底牌是" .. numtoCard(getUserConf(msg.uid, "cards", {})[1]), msg.gid, 0)
+    sendMsg("庄家的底牌是" .. numToCard(getUserConf(msg.uid, "cards", {})[1]), msg.gid, 0)
     sendMsg("请庄家[CQ:at,qq=" .. msg.uid .. "]选择要牌还是停牌", msg.gid, 0)
-    ::again::
+    :: again ::
     setGroupConf(msg.gid, "gameTurn", 1)
     setUserConf(msg.uid, "stand", 0)
     setUserConf(msg.uid, "hit", 0)
@@ -255,7 +255,7 @@ function gameStart(msg)
         end
         sleepTime(1000)
     end
-    ::continue::
+    :: continue ::
     --结算
     local res = gameEnd(msg)
     return res
@@ -330,7 +330,7 @@ function gameEnd(msg)
         local cards = getUserConf(player, "cards", {})
         res = res .. "[CQ:at,qq=" .. player .. "]的牌为："
         for i, card in ipairs(cards) do
-            res = res .. numtoCard(card) .. ' '
+            res = res .. numToCard(card) .. ' '
         end
         getMaxn(cards, 1, 0)
         res = res .. "最终值为" .. maxn .. ' '
@@ -434,7 +434,7 @@ function drawCard(msg, player)
                 setGroupConf(msg.gid, "deck", deck)
                 table.insert(cards, i)
                 setUserConf(player, "cards", cards)
-                return "您抽到的牌是:" .. numtoCard(i)
+                return "您抽到的牌是:" .. numToCard(i)
             end
         end
     end
@@ -453,7 +453,7 @@ function showCard(msg)
         cards = "底牌 "
         for index, card in ipairs(getUserConf(player, "cards", {})) do
             if (index ~= 1) then
-                cards = cards .. numtoCard(card) .. " "
+                cards = cards .. numToCard(card) .. " "
             end
         end
         res = res .. '[CQ:at,qq=' .. player .. ']:' .. cards .. '\n'
@@ -469,7 +469,7 @@ function showHoleCard(msg)
         return "您不是本轮游戏的玩家×"
     end
     local card = getUserConf(msg.uid, "cards", {})[1]
-    sendMsg("您的底牌是:" .. numtoCard(card), 0, msg.uid)
+    sendMsg("您的底牌是:" .. numToCard(card), 0, msg.uid)
 end
 
 function hit(msg)

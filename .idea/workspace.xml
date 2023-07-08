@@ -6,7 +6,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a146c46-d0d1-4492-b44f-3b5aa3ff6b36" name="更改" comment="" />
+    <list default="true" id="8a146c46-d0d1-4492-b44f-3b5aa3ff6b36" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugin/blackJack.lua" beforeDir="false" afterPath="$PROJECT_DIR$/Plugin/blackJack.lua" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,12 +31,15 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "WebServerToolWindowFactoryState": "false",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/Desktop/Dice",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -46,6 +52,7 @@
       <option name="presentableId" value="Default" />
       <updated>1688092751736</updated>
       <workItem from="1688092757188" duration="7000" />
+      <workItem from="1688809236292" duration="234000" />
     </task>
     <servers />
   </component>
