@@ -42,9 +42,9 @@ local init_deck = {
 
 function table.sum(tab)
     local res = 0
-    for i, j in pairs(tab) do
-        if (type(j) == "number") then
-            res = res + j
+    for _, card in pairs(tab) do
+        if (type(card) == "number") then
+            res = res + card
         end
     end
     return res
@@ -130,7 +130,7 @@ function gameStart(msg)
     sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
             msg.gid, 0)
     eventMsg("加入", msg.gid, msg.uid)
-    for i = 1, WaitTime, 1 do
+    for _ = 1, WaitTime, 1 do
         if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
             return ""
         end
@@ -164,7 +164,7 @@ function gameStart(msg)
                 BetLimit .. "，最多为" .. betMaxn .. "），" ..
                 WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
                 msg.gid, 0)
-        for i = 1, WaitTime, 1 do
+        for _ = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
             end
@@ -181,7 +181,7 @@ function gameStart(msg)
         end
         :: continue ::
     end
-    for index, player in ipairs(gameHead) do
+    for _, player in ipairs(gameHead) do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
         end
@@ -213,7 +213,7 @@ function gameStart(msg)
         sleepTime(2000)
         sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid,
                 0)
-        for i = 1, WaitTime, 1 do
+        for _ = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
             end
@@ -243,7 +243,7 @@ function gameStart(msg)
     end
     sleepTime(2000)
     sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
-    for i = 1, WaitTime, 1 do
+    for _ = 1, WaitTime, 1 do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
         end
@@ -303,7 +303,7 @@ function gameJoin(msg)
     table.insert(gameHead, msg.uid)
     setGroupConf(msg.gid, "gameHead", gameHead)
     local res = ""
-    for index, player in ipairs(gameHead) do
+    for _, player in ipairs(gameHead) do
         res = res .. '[CQ:at,qq=' .. player .. '] '
     end
     return "成功加入游戏，当前玩家为：" .. res
@@ -449,7 +449,7 @@ function showCard(msg)
     end
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     local res = ""
-    for index, player in ipairs(gameHead) do
+    for _, player in ipairs(gameHead) do
         cards = "底牌 "
         for index, card in ipairs(getUserConf(player, "cards", {})) do
             if (index ~= 1) then
