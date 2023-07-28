@@ -3,7 +3,7 @@ BlackJack插件
 By Fuyuki_Vila(QQ 1642421711)
 2023/6/22
 ]]
-
+require("money")
 msg_order = {
     ["21点设置"] = "gameSet",
     ["开盘21点"] = "gameStart",
@@ -13,14 +13,10 @@ msg_order = {
     ["强制结束游戏"] = "gameExit",
     ["查看明牌"] = "showCard",
     ["查看底牌"] = "showHoleCard",
-    ["领取低保"] = "getMoney",
-    ["我的资金"] = "showMoney",
     ["要牌"] = "hit",
     ["停牌"] = "stand"
 }
 
-local MoneyLimit = 20 --低保领取限制
-local MoneyTime = 2   --低保领取次数限制
 local WaitTime = 30   --等待时间
 local BetLimit = 5    --最低下注资金
 
@@ -128,7 +124,7 @@ function gameStart(msg)
     gameExit(msg) --游戏初始化
     setGroupConf(msg.gid, "gameWait", 1)
     sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
-            msg.gid, 0)
+        msg.gid, 0)
     eventMsg("加入", msg.gid, msg.uid)
     for _ = 1, WaitTime, 1 do
         if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
@@ -161,9 +157,9 @@ function gameStart(msg)
         end
         setGroupConf(msg.gid, "gameTurn", index)
         sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" ..
-                BetLimit .. "，最多为" .. betMaxn .. "），" ..
-                WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
-                msg.gid, 0)
+            BetLimit .. "，最多为" .. betMaxn .. "），" ..
+            WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
+            msg.gid, 0)
         for _ = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
@@ -212,7 +208,7 @@ function gameStart(msg)
         end
         sleepTime(2000)
         sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid,
-                0)
+            0)
         for _ = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
@@ -325,8 +321,6 @@ function gameEnd(msg)
     local gameResult = {}
     local res = ""
     for index, player in ipairs(gameHead) do
-        local xMoney = getUserConf(player, "money", 0)
-        local zMoney = getUserConf(msg.uid, "money", 0)
         local cards = getUserConf(player, "cards", {})
         res = res .. "[CQ:at,qq=" .. player .. "]的牌为："
         for i, card in ipairs(cards) do
@@ -340,24 +334,20 @@ function gameEnd(msg)
                 res = res .. "俩家黑杰克，平局"
                 --庄家黑杰克闲家黑杰克
             elseif (gameResult[1] == 21 and #getUserConf(gameHead[1], "cards", {}) == 2) then
-                res = res .. "庄家黑杰克，闲家输，失去" .. gameMoney[index]
-                setUserConf(player, "money", xMoney - gameMoney[index])
-                setUserConf(msg.uid, "money", zMoney + gameMoney[index])
+                res = res .. "庄家黑杰克，闲家输，" .. changeMoney(player, -gameMoney[index])
+                changeMoney(msg.uid, gameMoney[index])
                 --庄家黑杰克
             elseif (gameResult[index] == 21 and #getUserConf(player, "cards", {}) == 2) then
-                res = res .. "闲家黑杰克，获得1.5倍注资" .. gameMoney[index] * 1.5
-                setUserConf(player, "money", xMoney + gameMoney[index] * 1.5)
-                setUserConf(msg.uid, "money", zMoney - gameMoney[index] * 1.5)
+                res = res .. "闲家黑杰克，" .. changeMoney(player, gameMoney[index] * 1.5)
+                changeMoney(msg.uid, -gameMoney[index] * 1.5)
                 --闲家黑杰克
             elseif (gameResult[1] > gameResult[index]) then
-                res = res .. "闲家输，失去" .. gameMoney[index]
-                setUserConf(player, "money", xMoney - gameMoney[index])
-                setUserConf(msg.uid, "money", zMoney + gameMoney[index])
+                res = res .. "闲家输，" .. changeMoney(player, -gameMoney[index])
+                changeMoney(msg.uid, gameMoney[index])
                 --闲家输
             elseif (gameResult[1] < gameResult[index]) then
-                res = res .. "闲家赢，获得" .. gameMoney[index]
-                setUserConf(player, "money", xMoney + gameMoney[index])
-                setUserConf(msg.uid, "money", zMoney - gameMoney[index])
+                res = res .. "闲家赢，" .. changeMoney(player, gameMoney[index])
+                changeMoney(msg.uid, -gameMoney[index])
                 --闲家赢
             elseif (gameResult[1] == gameResult[index]) then
                 res = res .. "平局"
@@ -399,22 +389,6 @@ function bet(msg)
             return "您已成功下注" .. target
         end
     end
-end
-
-function getMoney(msg)
-    if (getUserToday(msg.uid, "getMoney", 0) >= MoneyTime) then
-        return "您今天已经领取低保了×"
-    end
-    if (getUserConf(msg.uid, "money", 0) > MoneyLimit) then
-        return "您的资金高于低保条件×"
-    end
-    setUserToday(msg.uid, "getMoney", getUserToday(msg.uid, "getMoney", 0) + 1)
-    setUserConf(msg.uid, "money", getUserConf(msg.uid, "money", 0) + MoneyLimit)
-    return "成功领取低保√，玩的愉快~"
-end
-
-function showMoney(msg)
-    return "您的资金为:" .. getUserConf(msg.uid, "money", 0)
 end
 
 function drawCard(msg, player)
