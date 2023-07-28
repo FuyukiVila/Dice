@@ -3,7 +3,9 @@ BlackJack插件
 By Fuyuki_Vila(QQ 1642421711)
 2023/6/22
 ]]
+
 require("money")
+
 msg_order = {
     ["21点设置"] = "gameSet",
     ["开盘21点"] = "gameStart",
@@ -17,8 +19,8 @@ msg_order = {
     ["停牌"] = "stand"
 }
 
-local WaitTime = 30   --等待时间
-local BetLimit = 5    --最低下注资金
+local WaitTime = 30 --等待时间
+local BetLimit = 5  --最低下注资金
 
 local init_deck = {
     [1] = 16,
@@ -320,6 +322,7 @@ function gameEnd(msg)
     local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
     local gameResult = {}
     local res = ""
+    local finalMoney = 0
     for index, player in ipairs(gameHead) do
         local cards = getUserConf(player, "cards", {})
         res = res .. "[CQ:at,qq=" .. player .. "]的牌为："
@@ -335,19 +338,19 @@ function gameEnd(msg)
                 --庄家黑杰克闲家黑杰克
             elseif (gameResult[1] == 21 and #getUserConf(gameHead[1], "cards", {}) == 2) then
                 res = res .. "庄家黑杰克，闲家输，" .. changeMoney(player, -gameMoney[index])
-                changeMoney(msg.uid, gameMoney[index])
+                finalMoney = finalMoney + gameMoney[index]
                 --庄家黑杰克
             elseif (gameResult[index] == 21 and #getUserConf(player, "cards", {}) == 2) then
                 res = res .. "闲家黑杰克，" .. changeMoney(player, gameMoney[index] * 1.5)
-                changeMoney(msg.uid, -gameMoney[index] * 1.5)
+                finalMoney = finalMoney - gameMoney[index] * 1.5
                 --闲家黑杰克
             elseif (gameResult[1] > gameResult[index]) then
                 res = res .. "闲家输，" .. changeMoney(player, -gameMoney[index])
-                changeMoney(msg.uid, gameMoney[index])
+                finalMoney = finalMoney + gameMoney[index]
                 --闲家输
             elseif (gameResult[1] < gameResult[index]) then
                 res = res .. "闲家赢，" .. changeMoney(player, gameMoney[index])
-                changeMoney(msg.uid, -gameMoney[index])
+                finalMoney = finalMoney - gameMoney[index]
                 --闲家赢
             elseif (gameResult[1] == gameResult[index]) then
                 res = res .. "平局"
@@ -356,6 +359,7 @@ function gameEnd(msg)
         end
         res = res .. '\n'
     end
+    res = res .. "庄家" .. changeMoney(msg.uid, finalMoney)
     gameExit(msg)
     return res
 end

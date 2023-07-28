@@ -23,7 +23,7 @@ local StoreGoodsList = {
 }
 
 function buyStoreGoods(msg)
-    local goods = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"下注" + 1)
+    local goods = string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #".购买道具" + 1)
     if StoreGoodsList[goods] == nil then
         return "小店并未售卖该商品……"
     end

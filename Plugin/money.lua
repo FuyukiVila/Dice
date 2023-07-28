@@ -1,8 +1,8 @@
 msg_order = {
     ["领取低保"] = "getMoney",
     ["我的资金"] = "showMoney",
-    ["使用双倍卡"] = "useDouble",
-    ["使用保护卡"] = "useProtect"
+    ["使用资金双倍卡"] = "useDouble",
+    ["使用资金保护卡"] = "useProtect"
 }
 
 local MoneyLimit = 20 --低保领取限制
@@ -40,7 +40,7 @@ function changeMoney(user, change)
             res = res .. "受到保护卡的影响，本次不扣除资金"
         end
         setUserConf(user, "money", getUserConf(user, "money", 0) + change)
-        res = res .. "失去" .. change
+        res = res .. "失去" .. -change
     end
     return res
 end
