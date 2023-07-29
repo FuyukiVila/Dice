@@ -2,8 +2,8 @@ require("favor_event")
 require("tool")
 
 msg_order = {
-    ["{self}好感度"] = "showMyFavor",
-    ["与{self}互动"] = "interact"
+    ["春好感度"] = "showMyFavor",
+    ["与春互动"] = "interact"
 }
 
 function changeFavor(user, change)
@@ -31,8 +31,9 @@ function showMyFavor(msg)
 end
 
 function interact(msg)
-    local name = getTarget(msg, "与{self}互动")
+    local name = getTarget(msg, "与春互动")
     local event = favorEventList[name]
+    local res = ""
     if event == nil then
         return "没有这项活动×"
     end
@@ -40,7 +41,11 @@ function interact(msg)
         return event.out_limit
     end
     setUserToday(msg.uid, event.id, getUserConf(msg.uid, event.id, 0) + 1)
-    local res = event.reply .. '\n'
+    if type(event.reply) == "function" then
+        res = res .. event:reply(msg) .. '\n'
+    else
+        res = res .. event.reply .. '\n'
+    end
     res = res .. changeFavor(msg.uid, event.change)
     return res
 end
