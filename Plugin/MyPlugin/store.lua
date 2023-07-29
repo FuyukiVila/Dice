@@ -7,23 +7,29 @@ msg_order = {
     [".使用道具"] = "useMyGoods"
 }
 
--- StoreGoods = {
---     __index = {
---         id = "",
---         price = 0,
---         new = function(id, price)
---             local t = {}
---             setmetatable(t, StoreGoods)
---             t.id = id
---             t.price = price
---             return t
---         end
---     }
--- }
+StoreGoods = {
+    id = "",
+    status = "",
+    price = 0,
+    detail = "",
+    limit = 1,
+    __index = StoreGoods
+}
+function StoreGoods:new(id, status, price, detail, limit)
+    local obj = {}
+    setmetatable(obj, self)
+    obj.id = id
+    obj.status = status
+    obj.price = price
+    obj.detail = detail
+    obj.limit = limit
+    return obj
+end
 
 local StoreGoodsList = {
-    ["资金双倍卡"] = { id = "doubleMoneyNum", status = "doubleMoney", price = 30, detail = "使用后下次获得的资金翻倍", limit = 1 },
-    ["资金保护卡"] = { id = "protectMoneyNum", status = "protectMoney", price = 30, detail = "使用后下次失去的资金变为0", limit = 1 }
+    ["资金双倍卡"] = StoreGoods:new("doubleMoneyNum", "doubleMoney", 30, "使用后下次获得的资金翻倍", 1),
+    ["资金保护卡"] = StoreGoods:new("protectMoneyNum", "protectMoney", 30, "使用后下次失去的资金变为0", 1),
+    ["好感度双倍卡"] = StoreGoods:new("doubleFavorNum", "doubleFavor", 50, "使用后下次增加的好感度翻倍", 1)
 }
 
 function buyStoreGoods(msg)
@@ -58,7 +64,7 @@ function showMyGoods(msg)
 end
 
 function useMyGoods(msg)
-    local name = getTarget(msg, "使用道具")
+    local name = getTarget(msg, ".使用道具")
     local goods = StoreGoodsList[name]
     if (goods == nil) then
         return "该道具不存在×"
