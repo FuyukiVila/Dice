@@ -1,0 +1,3 @@
+favor_event = {
+    
+}
