@@ -18,8 +18,8 @@ msg_order = {
 -- }
 
 local StoreGoodsList = {
-    ["资金双倍卡"] = { id = "doubleMoneyNum", price = 30 },
-    ["资金保护卡"] = { id = "protectMoneyNum", price = 30 }
+    ["资金双倍卡"] = { id = "doubleMoneyNum", price = 30, detail = "使用后下次获得的资金翻倍" },
+    ["资金保护卡"] = { id = "protectMoneyNum", price = 30, detail = "使用后下次失去的资金变为0"}
 }
 
 function buyStoreGoods(msg)
@@ -38,7 +38,7 @@ end
 function showStoreGoods(msg)
     local res = "小店售卖的商品有：\n"
     for name, goods in pairs(StoreGoodsList) do
-        res = res .. name .. " " .. goods.price .. "$\n"
+        res = res .. name .. " " .. goods.price .. "$ "..goods.detail..'\n'
     end
     return res
 end

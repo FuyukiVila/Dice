@@ -66,5 +66,5 @@ function useProtect(msg)
     end
     setUserConf(msg.uid, "protectMoney", 1)
     setUserConf(msg.uid, "protectMoneyNum", getUserConf(msg.uid, "protectMoneyNum", 0) - 1)
-    return "成功使用双倍卡，下次获得资金翻倍"
+    return "成功使用保护卡，下次失去的资金变为0"
 end
