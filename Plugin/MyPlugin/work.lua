@@ -1,3 +1,5 @@
+require("tool")
+
 msg_order = {
     ["打工"] = "work",
     ["同意"] = "accept",
@@ -6,24 +8,8 @@ msg_order = {
 
 local workLimit = 5
 
-local getAtQQ = function(str)
-    local n = tonumber(str)
-    if (n) then
-        return str
-    else
-        return string.match(str, "%d+")
-    end
-end
-
-function atQQ(qq)
-    if (tonumber(qq) ~= nil) then
-        return "[CQ:at,qq=" .. qq .. "]"
-    end
-    return ""
-end
-
 function work(msg)
-    local boss = getAtQQ(string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #"打工" + 1))
+    local boss = getAtQQ(getTarget(msg, "打工"))
     if (tonumber(boss) == nil) then
         return ""
     end
@@ -42,7 +28,7 @@ function work(msg)
     setUserConf(boss, "request", 1)
     setUserConf(boss, "accept", 0)
     setUserConf(boss, "refuse", 0)
-    sendMsg(atQQ(msg.uid) .. "向" .. atQQ(boss) .. "发起打工请求，请在30s内回复《同意》或《拒绝》，否则默认拒绝",
+    sendMsg(getAtQQ(msg.uid) .. "向" .. getAtQQ(boss) .. "发起打工请求，请在30s内回复《同意》或《拒绝》，否则默认拒绝",
         msg.gid, 0)
     for i = 1, 30, 1 do
         if (getUserConf(boss, 'accept', 0) == 1) then

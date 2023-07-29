@@ -1,3 +1,0 @@
-favor_event = {
-    
-}

@@ -1,8 +1,6 @@
 msg_order = {
     ["领取低保"] = "getMoney",
-    ["我的资金"] = "showMoney",
-    ["使用资金双倍卡"] = "useDouble",
-    ["使用资金保护卡"] = "useProtect"
+    ["我的资金"] = "showMoney"
 }
 
 local MoneyLimit = 20 --低保领取限制
@@ -43,28 +41,4 @@ function changeMoney(user, change)
         res = res .. "失去" .. -change
     end
     return res
-end
-
-function useDouble(msg)
-    if (getUserConf(msg.uid, "doubleMoneyNum", 0) == 0) then
-        return "您没有双倍卡"
-    end
-    if (getUserConf(msg.uid, "doubleMoney", 0) == 1) then
-        return "您已经使用了双倍卡"
-    end
-    setUserConf(msg.uid, "doubleMoney", 1)
-    setUserConf(msg.uid, "doubleMoneyNum", getUserConf(msg.uid, "doubleMoneyNum", 0) - 1)
-    return "成功使用双倍卡，下次获得资金翻倍"
-end
-
-function useProtect(msg)
-    if (getUserConf(msg.uid, "protectMoneyNum", 0) == 0) then
-        return "您没有保护卡"
-    end
-    if (getUserConf(msg.uid, "protectMoney", 0) == 1) then
-        return "您已经使用了保护卡"
-    end
-    setUserConf(msg.uid, "protectMoney", 1)
-    setUserConf(msg.uid, "protectMoneyNum", getUserConf(msg.uid, "protectMoneyNum", 0) - 1)
-    return "成功使用保护卡，下次失去的资金变为0"
 end
