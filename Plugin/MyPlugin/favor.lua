@@ -47,7 +47,7 @@ function interact(msg)
         local day = tonumber(os.date("%d"))
         local month = tonumber(os.date("%m"))
         local hour = tonumber(os.date("%H"))
-        if (event.trigger.day == nil or event.trigger.day[day]) and
+        if  (event.trigger.day == nil or event.trigger.day[day]) and
             (event.trigger.month == nil or event.trigger.month[month]) and
             (event.trigger.week == nil or event.trigger.week[week]) and
             (event.trigger.hour == nil or event.trigger.hour[hour]) and
