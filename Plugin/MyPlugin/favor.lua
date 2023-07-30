@@ -8,6 +8,7 @@ msg_order = {
     ["与" .. BotName .. "互动"] = "interact"
 }
 
+--好感度变化
 function changeFavor(user, change)
     local res = ""
     local old_favor = getUserConf(user, "favor", 0)
@@ -28,10 +29,12 @@ function changeFavor(user, change)
     return res
 end
 
+--查看我的好感度
 function showMyFavor(msg)
     return "{self}对{nick}好感度是" .. getUserConf(msg.uid, "favor", 0)
 end
 
+--互动
 function interact(msg)
     local name = getTarget(msg, "与" .. BotName .. "互动")
     local event = favorEventList[name]
