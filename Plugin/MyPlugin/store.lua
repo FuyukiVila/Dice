@@ -29,7 +29,7 @@ end
 local StoreGoodsList = {
     ["资金双倍卡"] = StoreGoods:new("doubleMoneyNum", "doubleMoney", 30, "使用后下次获得的资金翻倍", 1),
     ["资金保护卡"] = StoreGoods:new("protectMoneyNum", "protectMoney", 30, "使用后下次失去的资金变为0", 1),
-    ["好感度双倍卡"] = StoreGoods:new("doubleFavorNum", "doubleFavor", 50, "使用后下次增加的好感度翻倍", 1)
+    -- ["好感度双倍卡"] = StoreGoods:new("doubleFavorNum", "doubleFavor", 50, "使用后下次增加的好感度翻倍", 1)
 }
 
 function buyStoreGoods(msg)
