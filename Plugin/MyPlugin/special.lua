@@ -19,24 +19,24 @@ Chapter = {
         return obj
     end,
     __index = Chapter,
+}
 
-    --选择支实例
-    Select = {
-        choice = "",
-        favor = 0,
-        reply = "",
-        nextIndex = 1,
-        new = function(self, choice, favor, reply, nextIndex)
-            local obj = {}
-            setmetatable(obj, self)
-            obj.choice = choice or ""
-            obj.favor = favor or 0
-            obj.reply = reply or ""
-            obj.nextIndex = nextIndex
-            return obj
-        end,
-        __index = Chapter.Select
-    }
+--选择支实例
+Select = {
+    choice = "",
+    favor = 0,
+    reply = "",
+    nextIndex = 1,
+    new = function(self, choice, favor, reply, nextIndex)
+        local obj = {}
+        setmetatable(obj, self)
+        obj.choice = choice or ""
+        obj.favor = favor or 0
+        obj.reply = reply or ""
+        obj.nextIndex = nextIndex
+        return obj
+    end,
+    __index = Select
 }
 
 --情人节特供
@@ -54,8 +54,8 @@ local QixiChapters = {
     sunrise = {
         [1] = Chapter:new("这么早就来找我了吗？那……要一起去看日出吗？"),
         [2] = Chapter:new("（走在山路上）说起来，{nick}喜欢日出的风景还是日落的风景？", {
-            Chapter.Select:new("日出", 20, "日出吗？我也喜欢日出，清晨的阳光洒在大地上，万物便有了生机，崭新的一天就此开始了。"),
-            Chapter.Select:new("日落", 10, "日落吗……日落也不错哦，夕阳西下，晚霞浸染大地……啊，不好意思，刚才说入迷了！") }),
+            Select:new("日出", 20, "日出吗？我也喜欢日出，清晨的阳光洒在大地上，万物便有了生机，崭新的一天就此开始了。"),
+            Select:new("日落", 10, "日落吗……日落也不错哦，夕阳西下，晚霞浸染大地……啊，不好意思，刚才说入迷了！") }),
         [3] = Chapter:new("（山路蜿蜒陡峭，加之杂草丛生，你们小心翼翼地拨开沿路的灌木，一步一步沿着路向上走）"),
         [4] = Chapter:new("小心！（你的脚下突然一滑，就在你的脑袋即将与地面亲密接触的前一刻，你的手臂被拉住了，让你免受了这次不幸）"),
         [5] = Chapter:new("呜……（少女吃力地抓住你的双臂，可以看出她很快要撑不住了，你赶忙调整姿态，站了起来）"),
@@ -74,7 +74,6 @@ function gal(msg, Chapters, res)
     while (index <= #Chapters and index >= 1) do
         local chapter = Chapters[index]
         sendMsg(chapter.words, msg.gid, msg.uid)
-        sleepTime(4000)
         index = index + 1
         if chapter.select ~= nil then
             local reply = "（请回复其中之一："
@@ -90,7 +89,7 @@ function gal(msg, Chapters, res)
                     if getUserToday(msg.uid, select.choice, 0) == 1 then
                         res.change = res.change + select.favor
                         sendMsg(select.reply, msg.gid, msg.uid)
-                        sleepTime(4000)
+                        sleepTime(5000)
                         index = select.nextIndex or index
                         goto continue
                     end
@@ -98,6 +97,7 @@ function gal(msg, Chapters, res)
             end
             ::continue::
         end
+        sleepTime(5000)
     end
     return res
 end
