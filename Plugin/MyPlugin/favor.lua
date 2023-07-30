@@ -19,7 +19,7 @@ function changeFavor(user, change)
             res = res .. "受到好感度双倍卡的效果，本次好感度提升翻倍\n"
         end
         local new_favor = old_favor + change
-        res = res .. "好感度变化：" .. old_favor .. "->" .. new_favor
+        res = res .. "好感度变化：" .. old_favor .. " -> " .. new_favor
         setUserConf(user, "favor", new_favor)
     else
         local new_favor = old_favor + change
