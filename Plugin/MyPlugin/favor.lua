@@ -61,7 +61,7 @@ function interact(msg)
     if getUserToday(msg.uid, event.id, 0) >= event.limit then
         return event.outLimitReply
     end
-    setUserToday(msg.uid, event.id, getUserConf(msg.uid, event.id, 0) + 1)
+    setUserToday(msg.uid, event.id, getUserToday(msg.uid, event.id, 0) + 1)
     if type(event.reply) == "function" then
         res = res .. event:reply(msg) .. '\n'
     else
