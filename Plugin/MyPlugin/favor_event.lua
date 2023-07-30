@@ -1,5 +1,4 @@
 require("tool")
-require("favor")
 require("special")
 
 msg_order = {

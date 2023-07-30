@@ -1,5 +1,4 @@
 require("tool")
-require("favor")
 
 msg_order = {
     ["日出"] = "chooseAnswer",
