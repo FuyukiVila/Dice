@@ -15,6 +15,7 @@ StoreGoods = {
     limit = 1,
     __index = StoreGoods
 }
+
 function StoreGoods:new(id, status, price, detail, limit)
     local obj = {}
     setmetatable(obj, self)
