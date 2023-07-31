@@ -21,14 +21,15 @@ Chapter = {
 --选择支实例
 Select = {
     choice = "",
-    favor = 0,
+    affect = 0 or function()
+    end,
     reply = "",
     nextIndex = 1,
-    new = function(self, choice, favor, reply, nextIndex)
+    new = function(self, choice, affect, reply, nextIndex)
         local obj = {}
         setmetatable(obj, self)
         obj.choice = choice or ""
-        obj.favor = favor or 0
+        obj.affect = affect or 0
         obj.reply = reply or ""
         obj.nextIndex = nextIndex
         return obj
@@ -36,7 +37,7 @@ Select = {
     __index = Select
 }
 
--- gal game
+-- galgame
 function gal(msg, Chapters, res)
     local index = 1
     while (index <= #Chapters and index >= 1) do
@@ -56,7 +57,11 @@ function gal(msg, Chapters, res)
             while true do
                 for _, select in ipairs(chapter.select) do
                     if getUserToday(msg.uid, select.choice, 0) == 1 then
-                        res.change = res.change + select.favor
+                        if type(select.affect) == "function" then
+                            select.affect(msg)
+                        elseif type(select.affect) == "number" then
+                            res.favor = res.favor + select.affect
+                        end
                         sendMsg(select.reply, msg.gid, msg.uid)
                         sleepTime(5000)
                         index = select.nextIndex or index

@@ -86,41 +86,41 @@ favorEventList = {
                 end
             end, nil, 1, "茶会时间！", "今天的茶会，喜欢吗？"),
     ["拔呆毛"] = FavorEvent:new("daimao", "不……不许拔呆毛！", -5, { favor = 5 }, "你想做什么？(σ｀д′)σ（举枪）", 5, "咕啊！我的呆毛(ﾉД`)（已黑化）", "呆毛……呆毛被拔光了……"),
-    ["过圣诞节"] = FavorEvent:new("Christmas", "要是没人陪你过圣诞节的话，就让我来陪你过吧~", 30,
-            { month = { [12] = true }, day = { [25] = true } }, "这不是还没到圣诞节呢，还是说，你现在就想过圣诞节？",
-            1, function(self, msg)
-                local res = ChristmasDate(msg)
-                self.change = res.change or 0
-                return res.reply or ""
-            end, "又想再来一次吗？真是的，贪心的孩子可不好呢"),
-    ["过情人节"] = FavorEvent:new("Valentine", "情人节没人陪吗？那……我来陪你好了。", nil,
-            function(self, msg)
-                if os.date("%m.%d") ~= "2.14" then
-                    self.triggerReply = "还没到情人节呢，不要贪心哦~"
-                    return false
-                elseif (getUserConf(msg.uid, "favor", 0) < 200) then
-                    self.triggerReply = "果然……还是算了吧……（跑开）\n" .. changeFavor(msg.uid, -20)
-                    return false
-                end
-                return true
-            end, nil, 1, function(self, msg)
-                local res = ValentineDate(msg)
-                self.change = res.change or 0
-                return res.reply or ""
-            end, "美好的时光总是如此短暂，明年，我们再一起约会吧~"),
+    --["过圣诞节"] = FavorEvent:new("Christmas", "要是没人陪你过圣诞节的话，就让我来陪你过吧~", 30,
+    --        { month = { [12] = true }, day = { [25] = true } }, "这不是还没到圣诞节呢，还是说，你现在就想过圣诞节？",
+    --        1, function(self, msg)
+    --            local res = ChristmasDate(msg)
+    --            self.change = res.change or 0
+    --            return res.reply or ""
+    --        end, "又想再来一次吗？真是的，贪心的孩子可不好呢"),
+    --["过情人节"] = FavorEvent:new("Valentine", "情人节没人陪吗？那……我来陪你好了。", nil,
+    --        function(self, msg)
+    --            if os.date("%m.%d") ~= "2.14" then
+    --                self.triggerReply = "还没到情人节呢，不要贪心哦~"
+    --                return false
+    --            elseif (getUserConf(msg.uid, "favor", 0) < 200) then
+    --                self.triggerReply = "果然……还是算了吧……（跑开）\n" .. changeFavor(msg.uid, -20)
+    --                return false
+    --            end
+    --            return true
+    --        end, nil, 1, function(self, msg)
+    --            local res = ValentineDate(msg)
+    --            self.change = res.change or 0
+    --            return res.reply or ""
+    --        end, "美好的时光总是如此短暂，明年，我们再一起约会吧~"),
     ["过七夕节"] = FavorEvent:new("Qixi", "七夕节要陪你去约会吗~", nil,
-            { month = { [8] = true }, day = { [22] = true } }, "还没到七夕节呢，再等等吧~", 1,
+            { month = { [8] = true }, day = { [22] = true } }, "还没到七夕节呢，再等等吧~", 3,
             function(self, msg)
                 local res = QixiDate(msg)
                 self.change = res.change or 0
                 return res.reply or ""
-            end, "七夕是一场美丽的邂逅")
+            end, "七夕是一场美丽的邂逅，但是时间却是短暂的")
 }
 
 function showFavorEvent(msg)
     local res = "与春的日程安排有：\n"
     for name, event in pairs(favorEventList) do
-        res = res .."名称："..name .. "    描述：" .. event.detail .. '\n'
+        res = res .. "名称：" .. name .. "    描述：" .. event.detail .. '\n'
     end
     return res
 end
