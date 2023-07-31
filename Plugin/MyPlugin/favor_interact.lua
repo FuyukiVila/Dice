@@ -39,7 +39,7 @@ function interact(msg)
     setUserToday(msg.uid, event.id, getUserToday(msg.uid, event.id, 0) + 1)
     if type(event.reply) == "function" then
         res = res .. event:reply(msg) .. '\n'
-    else
+    elseif type(event.reply) == "string" then
         res = res .. event.reply .. '\n'
     end
     res = res .. changeFavor(msg.uid, event.change)

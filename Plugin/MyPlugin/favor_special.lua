@@ -13,13 +13,7 @@ function ChristmasDate(msg)
 end
 
 --七夕特供
-local QixiChapters = {
-
-}
-
 function QixiDate(msg)
-    local res = { change = 0, reply = "" }
-    local hour = os.date("%H")
-
+    
     return res
 end

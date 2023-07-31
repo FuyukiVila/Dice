@@ -58,7 +58,7 @@ favorEventList = {
                     return "这么贵的宝石……我会好好珍藏的！ヾ(๑╹◡╹)ﾉ\""
                 end
             end, "买这么多东西干什么呢？好好吃饭啦……"),
-    ["看日出"] = FavorEvent:new("sunrise", "早上5点，要一起去看日出吗？", 10, { hour = { [5] = true } }, "还没到日出的时候呢，再等等吧", 1, "[CQ:image,file=favor\\sunrise.png]", "日出，很漂亮呢……"),
+    ["看日出"] = FavorEvent:new("sunrise", "早上5点，要一起去看日出吗？", 10, { hour = { [5] = true } }, "还没到日出的时候呢，再等等吧", 1, "春，曙为最[CQ:image,file=favor\\sunrise.png]", "日出，很漂亮呢……"),
     ["吃早餐"] = FavorEvent:new("breakfast", "早餐的黄金时间是7:00-9:00，要记得按时吃早餐哦~", 10,
             function(self, msg)
                 local hour = tonumber(os.date("%H"))
@@ -72,7 +72,7 @@ favorEventList = {
                     return true
                 end
             end, nil, 1, "铛铛~新鲜出炉的面包，趁热吃吧~", "你还想吃几顿早餐？"),
-    ["茶会"] = FavorEvent:new("afternoonTea", "每天下午14:00到17:00是茶会时间，记得来参加哦~", 10,
+    ["茶会"] = FavorEvent:new("teaParty", "每天下午14:00到17:00是茶会时间，记得来参加哦~", 10,
             function(self, msg)
                 local hour = tonumber(os.date("%H"))
                 if hour < 14 then
@@ -84,7 +84,7 @@ favorEventList = {
                 else
                     return true
                 end
-            end, nil, 1, "茶会时间！", "今天的茶会，喜欢吗？"),
+            end, nil, 1, "要来杯红茶吗，还是说一块巧克力蛋糕？[CQ:image,file=favor\\tea_party.png]", "今天的茶会，喜欢吗？"),
     ["拔呆毛"] = FavorEvent:new("daimao", "不……不许拔呆毛！", -5, { favor = 5 }, "你想做什么？(σ｀д′)σ（举枪）", 5, "咕啊！我的呆毛(ﾉД`)（已黑化）", "呆毛……呆毛被拔光了……"),
     --["过圣诞节"] = FavorEvent:new("Christmas", "要是没人陪你过圣诞节的话，就让我来陪你过吧~", 30,
     --        { month = { [12] = true }, day = { [25] = true } }, "这不是还没到圣诞节呢，还是说，你现在就想过圣诞节？",
@@ -108,13 +108,13 @@ favorEventList = {
     --            self.change = res.change or 0
     --            return res.reply or ""
     --        end, "美好的时光总是如此短暂，明年，我们再一起约会吧~"),
-    ["过七夕节"] = FavorEvent:new("Qixi", "七夕节要陪你去约会吗~", nil,
-            { month = { [8] = true }, day = { [22] = true } }, "还没到七夕节呢，再等等吧~", 3,
-            function(self, msg)
-                local res = QixiDate(msg)
-                self.change = res.change or 0
-                return res.reply or ""
-            end, "七夕是一场美丽的邂逅，但是时间却是短暂的")
+    --["过七夕节"] = FavorEvent:new("Qixi", "七夕节要陪你去约会吗~", nil,
+    --        { month = { [8] = true }, day = { [22] = true } }, "还没到七夕节呢，再等等吧~", 3,
+    --        function(self, msg)
+    --            local res = QixiDate(msg)
+    --            self.change = res.change or 0
+    --            return res.reply or ""
+    --        end, "七夕是一场美丽的邂逅，但是时间却是短暂的")
 }
 
 function showFavorEvent(msg)

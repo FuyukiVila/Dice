@@ -8,10 +8,12 @@ Chapter = {
     select = {
 
     },
-    new = function(self, words, select)
+    nextIndex = 0,
+    new = function(self, words, nextIndex, select)
         local obj = {}
         setmetatable(obj, self)
         obj.words = words or ""
+        obj.nextIndex = nextIndex
         obj.select = select
         return obj
     end,
@@ -21,16 +23,14 @@ Chapter = {
 --选择支实例
 Select = {
     choice = "",
-    affect = 0 or function()
+    affect = function()
     end,
-    reply = "",
     nextIndex = 1,
-    new = function(self, choice, affect, reply, nextIndex)
+    new = function(self, choice, affect, nextIndex)
         local obj = {}
         setmetatable(obj, self)
         obj.choice = choice or ""
-        obj.affect = affect or 0
-        obj.reply = reply or ""
+        obj.affect = affect
         obj.nextIndex = nextIndex
         return obj
     end,
@@ -44,6 +44,7 @@ function gal(msg, Chapters, res)
         local chapter = Chapters[index]
         sendMsg(chapter.words, msg.gid, msg.uid)
         index = index + 1
+        index = chapter.nextIndex or index
         if chapter.select ~= nil then
             local reply = "（请回复其中之一："
             for _, select in ipairs(chapter.select) do
@@ -58,12 +59,8 @@ function gal(msg, Chapters, res)
                 for _, select in ipairs(chapter.select) do
                     if getUserToday(msg.uid, select.choice, 0) == 1 then
                         if type(select.affect) == "function" then
-                            select.affect(msg)
-                        elseif type(select.affect) == "number" then
-                            res.favor = res.favor + select.affect
+                            select.affect(msg, res)
                         end
-                        sendMsg(select.reply, msg.gid, msg.uid)
-                        sleepTime(5000)
                         index = select.nextIndex or index
                         goto continue
                     end
