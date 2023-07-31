@@ -15,5 +15,7 @@
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
-    ]
+    ],
+    "Lua.workspace.library": [],
+    "Lua.workspace.checkThirdParty": false
 }

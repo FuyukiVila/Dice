@@ -15,5 +15,4 @@ end
 --七夕特供
 function QixiDate(msg)
     
-    return res
 end
