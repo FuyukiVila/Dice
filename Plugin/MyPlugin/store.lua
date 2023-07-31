@@ -8,11 +8,11 @@ msg_order = {
 }
 
 StoreGoods = {
-    id = "",
-    status = "",
-    price = 0,
-    detail = "",
-    limit = 1,
+    id = "", --商品唯一数量id
+    status = "", -- 商品唯一状态id
+    price = 0, --商品价格
+    detail = "", -- 商品描述
+    limit = 1, --商品日使用上限
     __index = StoreGoods
 }
 
