@@ -12,7 +12,8 @@
         "getUserToday",
         "drawDeck",
         "getDiceQQ",
-        "loadlua"
+        "loadlua",
+        "loadLua"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
