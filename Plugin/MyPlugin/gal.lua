@@ -22,9 +22,8 @@ Chapter = {
 
 --选择支实例
 Select = {
-    choice = "",
-    affect = function()
-    end,
+    choice = "",             --选择支
+    affect = function() end, --选择后的影响
     nextIndex = 1,
     new = function(self, choice, affect, nextIndex)
         local obj = {}
