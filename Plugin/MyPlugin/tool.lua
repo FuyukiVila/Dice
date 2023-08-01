@@ -21,10 +21,10 @@ function table.sum(tab)
     return res
 end
 
-function table.find(tab, fv)
-    for key, value in pairs(tab) do
-        if (value == fv) then
-            return key
+function table.find(t, value)
+    for k, v in pairs(t) do
+        if (v == value) then
+            return k
         end
     end
     return nil

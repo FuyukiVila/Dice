@@ -19,11 +19,11 @@ function interact(msg)
         local day = tonumber(os.date("%d"))
         local month = tonumber(os.date("%m"))
         local hour = tonumber(os.date("%H"))
-        if (event.trigger.day == nil or event.trigger.day[day]) and
-                (event.trigger.month == nil or event.trigger.month[month]) and
-                (event.trigger.week == nil or event.trigger.week[week]) and
-                (event.trigger.hour == nil or event.trigger.hour[hour]) and
-                (event.trigger.favor == nil or getUserConf(msg.uid, "favor", 0) >= event.trigger.favor) then
+        if (event.trigger.day == nil or table.find(event.trigger.day, day)) and
+            (event.trigger.month == nil or table.find(event.trigger.month, month)) and
+            (event.trigger.week == nil or table.find(event.trigger.week, week)) and
+            (event.trigger.hour == nil or table.find(event.trigger.hour, hour)) and
+            (event.trigger.favor == nil or getUserConf(msg.uid, "favor", 0) >= event.trigger.favor) then
 
         else
             return event.triggerReply
