@@ -1,3 +1,7 @@
+require("money")
+require("tool")
+require("favor_tool")
+
 breakfastTrigger = function(self, msg)
     local hour = tonumber(os.date("%H"))
     if hour < 7 then

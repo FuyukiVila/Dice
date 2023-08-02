@@ -6,7 +6,7 @@ msg_order = {
 
 --查看我的好感度
 function showMyFavor(msg)
-    return "{self}对{nick}好感度是" .. getUserConf(msg.uid, "favor", 0)
+    return "{self}对{nick}好感度有" .. getUserConf(msg.uid, "favor", 0) .. '哦'
 end
 
 --好感度变化

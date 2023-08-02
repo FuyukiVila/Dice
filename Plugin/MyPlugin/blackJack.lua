@@ -108,7 +108,7 @@ function gameStart(msg)
     gameExit(msg) --游戏初始化
     setGroupConf(msg.gid, "gameWait", 1)
     sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
-            msg.gid, 0)
+        msg.gid, 0)
     eventMsg("加入", msg.gid, msg.uid)
     for _ = 1, WaitTime, 1 do
         if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
@@ -141,9 +141,9 @@ function gameStart(msg)
         end
         setGroupConf(msg.gid, "gameTurn", index)
         sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" ..
-                BetLimit .. "，最多为" .. betMaxn .. "），" ..
-                WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
-                msg.gid, 0)
+            BetLimit .. "，最多为" .. betMaxn .. "），" ..
+            WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
+            msg.gid, 0)
         for _ = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
@@ -191,8 +191,7 @@ function gameStart(msg)
             goto continue
         end
         sleepTime(2000)
-        sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid,
-                0)
+        sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
         for _ = 1, WaitTime, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
