@@ -20,7 +20,7 @@ teaPartyTrigger = function(self, msg)
     if hour < 14 then
         self.triggerReply = "茶会还在准备当中，再等等吧。"
         return false
-    elseif hour > 17 then
+    elseif hour >= 17 then
         self.triggerReply = "茶会已经结束了，记得参加明天的茶会哦~"
         return false
     else

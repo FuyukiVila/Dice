@@ -14,7 +14,7 @@ function interact(msg)
     if event == nil then
         return "{nick}想对{self}做什么？"
     end
-    local trigger = false
+    local trigger = true
     if type(event.trigger) == "table" then
         local week = tonumber(os.date("%w"))
         local day = tonumber(os.date("%d"))
@@ -33,12 +33,10 @@ function interact(msg)
         trigger = event:trigger(msg)
     end
     if trigger == false then
-        if event:trigger(msg) == false then
-            if type(event.triggerReply) == "string" then
-                return event.triggerReply
-            elseif type(event.triggerReply) == "function" then
-                return event:triggerReply(msg)
-            end
+        if type(event.triggerReply) == "string" then
+            return event.triggerReply
+        elseif type(event.triggerReply) == "function" then
+            return event:triggerReply(msg)
         end
     end
     if getUserToday(msg.uid, event.id, 0) >= event.limit then

@@ -58,7 +58,7 @@ function gal(msg, Chapters, res)
                 for _, select in ipairs(chapter.select) do
                     if getUserToday(msg.uid, select.choice, 0) == 1 then
                         if type(select.affect) == "function" then
-                            select.affect(msg, res)
+                            select:affect(msg, res)
                         end
                         index = select.nextIndex or index
                         goto continue
