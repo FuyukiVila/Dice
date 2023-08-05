@@ -22,6 +22,9 @@ function showMoney(msg)
     return "您的资金为:" .. getUserConf(msg.uid, "money", 0)
 end
 
+---@param user string
+---@param change number
+---@param switch boolean
 function changeMoney(user, change, switch)
     local res = ""
     if (change >= 0) then

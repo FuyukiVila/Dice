@@ -1,3 +1,4 @@
+---@param str string
 function getAtQQ(str)
     local n = tonumber(str)
     if (n) then
@@ -7,13 +8,16 @@ function getAtQQ(str)
     end
 end
 
+---@param msg userdata
+---@param prefix string
 function getTarget(msg, prefix)
     return string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #prefix + 1)
 end
 
-function table.sum(tab)
+---@param list table
+function table.sum(list)
     local res = 0
-    for _, num in pairs(tab) do
+    for _, num in pairs(list) do
         if (type(num) == "number") then
             res = res + num
         end
@@ -21,8 +25,9 @@ function table.sum(tab)
     return res
 end
 
-function table.find(t, value)
-    for k, v in pairs(t) do
+---@param list table
+function table.find(list, value)
+    for k, v in pairs(list) do
         if (v == value) then
             return k
         end
