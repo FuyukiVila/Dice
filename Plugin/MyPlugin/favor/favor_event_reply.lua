@@ -44,8 +44,8 @@ teaPartyReply = function(self, msg)
     if getUserToday(getDiceQQ(), "teaParty", 0) == 0 then
         setUserToday(getDiceQQ(), "teaParty", 1)
         teaPartyTime = teaPartyTime + 1
+        setUserConf(getDiceQQ(), "teaPartyTime", teaPartyTime)
     end
-    setUserConf(getDiceQQ(), "teaPartyTime", teaPartyTime)
     if table.find(teaPartyMember, msg.uid) == nil then
         table.insert(teaPartyMember, msg.uid)
     end
