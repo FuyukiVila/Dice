@@ -34,7 +34,7 @@ local StoreGoodsList = {
 }
 
 function buyStoreGoods(msg)
-    local goods = getTarget(msg, ".购买道具")
+    local goods = getTarget(msg)
     if StoreGoodsList[goods] == nil then
         return "小店并未售卖该商品……"
     end
@@ -65,7 +65,7 @@ function showMyGoods(msg)
 end
 
 function useMyGoods(msg)
-    local name = getTarget(msg, ".使用道具")
+    local name = getTarget(msg)
     local goods = StoreGoodsList[name]
     if (goods == nil) then
         return "该道具不存在×"

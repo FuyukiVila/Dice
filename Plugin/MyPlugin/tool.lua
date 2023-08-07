@@ -9,9 +9,8 @@ function getAtQQ(str)
 end
 
 ---@param msg userdata
----@param prefix string
-function getTarget(msg, prefix)
-    return string.match(msg.fromMsg, "^[%s]*(.-)[%s]*$", #prefix + 1)
+function getTarget(msg)
+    return string.match(msg.suffix, "^[%s]*(.-)[%s]*$")
 end
 
 ---@param list table

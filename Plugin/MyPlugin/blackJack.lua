@@ -358,7 +358,7 @@ function bet(msg)
     if (table.find(getGroupConf(msg.gid, "gameHead", {}), msg.uid) ~= getGroupConf(msg.gid, "gameTurn", 0)) then
         return "还没轮到您×"
     end
-    local target = getTarget(msg, "下注")
+    local target = getTarget(msg)
     local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
     local betMaxn = getGroupConf(msg.gid, "betMaxn", 0)
     if (tonumber(target) ~= nil) then

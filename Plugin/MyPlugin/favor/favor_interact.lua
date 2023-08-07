@@ -8,7 +8,7 @@ msg_order = {
 
 --互动
 function interact(msg)
-    local name = getTarget(msg, "与" .. BotName .. "互动")
+    local name = getTarget(msg)
     local event = favorEventList[name]
     local res = ""
     if event == nil then

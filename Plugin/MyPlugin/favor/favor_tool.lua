@@ -10,7 +10,7 @@ function showMyFavor(msg)
 end
 
 --好感度变化
----@param user string
+---@param user number
 ---@param change number
 function changeFavor(user, change)
     local res = ""
