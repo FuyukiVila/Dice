@@ -220,6 +220,20 @@ function gameStart(msg)
         setUserConf(msg.uid, "stand", 1)
         goto continue
     end
+    local cards = getUserConf(msg.uid, "cards", {})
+    getMaxn(cards, 1, 0)
+    if (maxn >= 17 or maxn == 0) then
+        sendMsg("庄家点数大于等于17，停止要牌", msg.gid, 0)
+        setUserConf(msg.uid, "stand", 1)
+        goto continue
+    end
+    if (maxn < 17) then
+        sendMsg("庄家点数小于17，必须要牌", msg.gid, 0)
+        sleepTime(2000)
+        eventMsg("要牌", msg.gid, msg.uid)
+        sleepTime(2000)
+        goto again
+    end
     sleepTime(2000)
     sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
     for _ = 1, WaitTime, 1 do
