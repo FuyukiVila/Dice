@@ -220,8 +220,7 @@ function gameStart(msg)
         setUserConf(msg.uid, "stand", 1)
         goto continue
     end
-    local cards = getUserConf(msg.uid, "cards", {})
-    getMaxn(cards, 1, 0)
+    getMaxn(getUserConf(msg.uid, "cards", {}), 1, 0)
     if (maxn >= 17 or maxn == 0) then
         sendMsg("庄家点数大于等于17，停止要牌", msg.gid, 0)
         setUserConf(msg.uid, "stand", 1)
