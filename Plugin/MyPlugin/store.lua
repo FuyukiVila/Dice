@@ -1,4 +1,5 @@
 require("tool")
+require("money")
 
 msg_order = {
     [".购买道具"] = "buyStoreGoods",

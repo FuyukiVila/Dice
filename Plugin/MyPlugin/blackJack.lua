@@ -126,7 +126,7 @@ function gameStart(msg)
     setGroupConf(msg.gid, "gameStart", 1)
     sendMsg("本轮游戏的庄家是[CQ:at,qq=" .. msg.uid .. "]", msg.gid, 0)
     sleepTime(2000)
-    local betMaxn = getUserConf(msg.uid, "money", 0) / 2
+    local betMaxn = math.ceil(getUserConf(msg.uid, "money", 0) / 2)
     setGroupConf(msg.gid, "betMaxn", betMaxn)
     local gameHead = getGroupConf(msg.gid, "gameHead", {})
     for index, player in ipairs(gameHead) do
@@ -224,13 +224,14 @@ function gameStart(msg)
     if (maxn >= 17 or maxn == 0) then
         sendMsg("庄家点数大于等于17，停止要牌", msg.gid, 0)
         setUserConf(msg.uid, "stand", 1)
+        sleepTime(2000)
         goto continue
     end
     if (maxn < 17) then
         sendMsg("庄家点数小于17，必须要牌", msg.gid, 0)
-        sleepTime(2000)
+        sleepTime(1000)
         eventMsg("要牌", msg.gid, msg.uid)
-        sleepTime(2000)
+        sleepTime(1000)
         goto again
     end
     sleepTime(2000)
