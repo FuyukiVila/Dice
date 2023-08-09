@@ -19,5 +19,12 @@
         "lowercase-global"
     ],
     "Lua.workspace.library": [],
-    "Lua.workspace.checkThirdParty": false
+    "Lua.workspace.checkThirdParty": false,
+    "emmylua.spell.dict": [
+        "Qixi",
+        "daimao"
+    ],
+    "luahelper.format.keep_simple_control_block_one_line": true,
+    "luahelper.format.keep_simple_function_one_line": true,
+    "luahelper.format.chop_down_kv_table": false
 }

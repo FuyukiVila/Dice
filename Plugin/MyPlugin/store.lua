@@ -8,11 +8,11 @@ msg_order = {
 }
 
 StoreGoods = {
-    id = "", --商品唯一数量id
+    id = "",     --商品唯一数量id
     status = "", -- 商品唯一状态id
-    price = 0, --商品价格
+    price = 0,   --商品价格
     detail = "", -- 商品描述
-    limit = 1, --商品日使用上限
+    limit = 1,   --商品日使用上限
     __index = StoreGoods
 }
 
@@ -41,7 +41,7 @@ function buyStoreGoods(msg)
     if getUserConf(msg.uid, "money", 0) < StoreGoodsList[goods].price then
         return "您并没有足够的钱……"
     end
-    setUserConf(msg.uid, "money", getUserConf(msg.uid, "money", 0) - StoreGoodsList[goods].price)
+    changeMoney(msg.uid, -StoreGoodsList[goods].price, true)
     setUserConf(msg.uid, StoreGoodsList[goods].id, getUserConf(msg.uid, StoreGoodsList[goods].id, 0) + 1)
     return "感谢购买" .. goods .. "，祝您生活愉快~"
 end

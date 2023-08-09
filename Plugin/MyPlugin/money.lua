@@ -19,7 +19,7 @@ function getMoney(msg)
 end
 
 function showMoney(msg)
-    return "您的资金为:" .. getUserConf(msg.uid, "money", 0)
+    return "您的资金为:" .. math.ceil(getUserConf(msg.uid, "money", 0))
 end
 
 ---@param user number
@@ -32,16 +32,16 @@ function changeMoney(user, change, switch)
             change = change * 2
             res = res .. "受到双倍卡的影响，本次资金增加翻倍，"
         end
-        setUserConf(user, "money", getUserConf(user, "money", 0) + change)
-        res = res .. "获得" .. change
+        setUserConf(user, "money", math.ceil(getUserConf(user, "money", 0) + change))
+        res = res .. "获得" .. change .. "资金"
     else
         if ((switch == false or switch == nil) and getUserConf(user, "protectMoney", 0) == 1) then
             setUserConf(user, "protectMoney", 0)
             change = 0
             res = res .. "受到保护卡的影响，本次不扣除资金"
         end
-        setUserConf(user, "money", getUserConf(user, "money", 0) + change)
-        res = res .. "失去" .. -change
+        setUserConf(user, "money", math.ceil(getUserConf(user, "money", 0) + change))
+        res = res .. "失去" .. -change .. "资金"
     end
     return res
 end
