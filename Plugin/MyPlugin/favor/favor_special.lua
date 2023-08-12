@@ -3,16 +3,16 @@ require("gal")
 require("favor_tool")
 
 --情人节特供
-function ValentineDate(msg)
+function ValentineSpecialEvent(msg)
     local res = { change = 0, reply = "" }
 end
 
 --圣诞特供
-function ChristmasDate(msg)
+function ChristmasSpecialEvent(msg)
     local res = { change = 0, reply = "" }
 end
 
 --七夕特供
-function QixiDate(msg)
-    
+function QixiSpecialEvent(msg)
+
 end

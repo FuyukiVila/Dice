@@ -22,7 +22,9 @@
     "Lua.workspace.checkThirdParty": false,
     "emmylua.spell.dict": [
         "Qixi",
-        "daimao"
+        "daimao",
+        "cpdd",
+        "ranint"
     ],
     "luahelper.format.keep_simple_control_block_one_line": true,
     "luahelper.format.keep_simple_function_one_line": true,

@@ -121,7 +121,7 @@ function cpdd(msg)
     if (tgt ~= "") then
         if (tgt == "我" or target == msg.fromQQ) then
             return "{nick}你在想什么？"
-        elseif(target == "") then
+        elseif (target == "") then
             return "{self}不知道{nick}喜欢谁"
         end
         local pic = "https://xiaobai.klizi.cn/API/ce/xie.php?qq=" .. target
