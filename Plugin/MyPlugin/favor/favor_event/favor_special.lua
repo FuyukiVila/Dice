@@ -1,6 +1,6 @@
 require("tool")
 require("favor.game.gal")
-require("favor.favor_tool.favor_tool")
+require("favor.favor_tool")
 
 --情人节特供
 function ValentineSpecialEvent(msg)

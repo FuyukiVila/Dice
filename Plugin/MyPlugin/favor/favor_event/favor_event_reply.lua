@@ -1,6 +1,6 @@
 require("money")
 require("tool")
-require("favor.favor_tool.favor_tool")
+require("favor.favor_tool")
 
 shopReply = function(self, msg)
     local money = getUserConf(msg.uid, "money", 0)

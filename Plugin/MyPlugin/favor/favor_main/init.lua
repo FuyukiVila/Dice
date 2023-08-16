@@ -1,6 +1,4 @@
-require("favor.favor_event.favor_event")
-require("tool")
-require("favor.favor_tool.favor_tool")
+require("favor.favor_event")
 
 --互动
 function interact(msg)
@@ -49,5 +47,19 @@ function interact(msg)
         res = res .. event.reply .. '\n'
     end
     res = res .. changeFavor(msg.uid, event.change)
+    return res
+end
+
+--查看我的好感度
+function showMyFavor(msg)
+    return "{self}对{nick}好感度有" .. getUserConf(msg.uid, "favor", 0) .. '哦'
+end
+
+--查看日程安排
+function showFavorEvent(msg)
+    local res = "与春的日程安排有：\n"
+    for name, event in pairs(favorEventList) do
+        res = res .. "名称：" .. name .. "    描述：" .. event.detail .. '\n'
+    end
     return res
 end

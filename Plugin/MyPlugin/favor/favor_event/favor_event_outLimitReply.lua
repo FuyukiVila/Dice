@@ -1,6 +1,6 @@
 require("money")
 require("tool")
-require("favor.favor_tool.favor_tool")
+require("favor.favor_tool")
 
 teaPartyOutLimitReply = function(self, msg)
     local res = "今天的茶会，喜欢吗？\n"

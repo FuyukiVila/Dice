@@ -1,1 +1,1 @@
-require("favor.favor_main.favor_interact")
+require("favor.favor_main")
