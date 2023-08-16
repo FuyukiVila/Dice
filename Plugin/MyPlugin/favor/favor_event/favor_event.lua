@@ -1,9 +1,9 @@
 require("tool")
-require("favor_special")
-require("favor_tool")
-require("favor_event_trigger")
-require("favor_event_reply")
-require("favor_event_outLimitReply")
+require("favor.favor_event.favor_special")
+require("favor.favor_tool.favor_tool")
+require("favor.favor_event.favor_event_trigger")
+require("favor.favor_event.favor_event_reply")
+require("favor.favor_event.favor_event_outLimitReply")
 require("money")
 
 msg_order = {

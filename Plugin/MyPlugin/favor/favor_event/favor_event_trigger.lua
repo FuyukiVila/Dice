@@ -1,6 +1,6 @@
 require("money")
 require("tool")
-require("favor_tool")
+require("favor.favor_tool.favor_tool")
 
 breakfastTrigger = function(self, msg)
     local hour = tonumber(os.date("%H"))

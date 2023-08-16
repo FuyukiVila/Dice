@@ -1,9 +1,5 @@
 BotName = "春"
 
-msg_order = {
-    [BotName .. "好感度"] = "showMyFavor"
-}
-
 --查看我的好感度
 function showMyFavor(msg)
     return "{self}对{nick}好感度有" .. getUserConf(msg.uid, "favor", 0) .. '哦'

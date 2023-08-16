@@ -1,10 +1,6 @@
-require("favor_event")
+require("favor.favor_event.favor_event")
 require("tool")
-require("favor_tool")
-
-msg_order = {
-    ["与" .. BotName .. "互动"] = "interact"
-}
+require("favor.favor_tool.favor_tool")
 
 --互动
 function interact(msg)

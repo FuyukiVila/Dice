@@ -1,7 +1,3 @@
-msg_order = {
-
-}
-
 --章节实例
 Chapter = {
     words = "",
