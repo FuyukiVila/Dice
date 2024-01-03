@@ -20,10 +20,10 @@ msg_order = {
     ["停牌"] = "stand"
 }
 
-local WaitTime = 30 --等待时间
-local BetLimit = 5  --最低下注资金
+local WAIT_TIME <const> = 30 --等待时间
+local BET_LIMIT <const> = 5  --最低下注资金
 
-local init_deck = {
+local INIT_DECK <const> = {
     [1] = 16,
     [2] = 16,
     [3] = 16,
@@ -102,15 +102,15 @@ function gameStart(msg)
     if (getGroupConf(msg.gid, "gameWait", 0) == 1) then
         return "本群游戏已开始，请等待该轮游戏结束或输入《强制结束游戏》指令关闭游戏进程×"
     end
-    if (getUserConf(msg.uid, "money", 0) < BetLimit * 4) then
+    if (getUserConf(msg.uid, "money", 0) < BET_LIMIT * 4) then
         return "您的资金不足以开盘×"
     end
     gameExit(msg) --游戏初始化
     setGroupConf(msg.gid, "gameWait", 1)
-    sendMsg("本轮游戏即将开始，请在" .. WaitTime .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
+    sendMsg("本轮游戏即将开始，请在" .. WAIT_TIME .. "s内加入本轮游戏，输入《加入》即可，输入《开始》可直接开始游戏",
         msg.gid, 0)
     eventMsg("加入", msg.gid, msg.uid)
-    for _ = 1, WaitTime, 1 do
+    for _ = 1, WAIT_TIME, 1 do
         if (getGroupConf(msg.gid, "gameWait", 0) == 0) then
             return ""
         end
@@ -141,10 +141,10 @@ function gameStart(msg)
         end
         setGroupConf(msg.gid, "gameTurn", index)
         sendMsg("[CQ:at,qq=" .. player .. "]请下筹码（输入《下注+数字》最少为" ..
-            BetLimit .. "，最多为" .. betMaxn .. "），" ..
-            WaitTime .. "s后未下注将自动下注最低筹码" .. BetLimit,
+            BET_LIMIT .. "，最多为" .. betMaxn .. "），" ..
+            WAIT_TIME .. "s后未下注将自动下注最低筹码" .. BET_LIMIT,
             msg.gid, 0)
-        for _ = 1, WaitTime, 1 do
+        for _ = 1, WAIT_TIME, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
             end
@@ -154,9 +154,9 @@ function gameStart(msg)
             sleepTime(1000)
         end
         if (#getGroupConf(msg.gid, "gameMoney") < index) then
-            sendMsg("未下注，已自动为您下注" .. BetLimit, msg.gid, 0)
+            sendMsg("未下注，已自动为您下注" .. BET_LIMIT, msg.gid, 0)
             local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
-            table.insert(gameMoney, BetLimit)
+            table.insert(gameMoney, BET_LIMIT)
             setGroupConf(msg.gid, "gameMoney", gameMoney)
         end
         :: continue ::
@@ -191,8 +191,8 @@ function gameStart(msg)
             goto continue
         end
         sleepTime(2000)
-        sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
-        for _ = 1, WaitTime, 1 do
+        sendMsg("请选择《要牌》还是《停牌》，" .. WAIT_TIME .. "s后未选择则默认停牌", msg.gid, 0)
+        for _ = 1, WAIT_TIME, 1 do
             if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
                 return ""
             end
@@ -235,8 +235,8 @@ function gameStart(msg)
     --     goto again
     -- end
     sleepTime(2000)
-    sendMsg("请选择《要牌》还是《停牌》，" .. WaitTime .. "s后未选择则默认停牌", msg.gid, 0)
-    for _ = 1, WaitTime, 1 do
+    sendMsg("请选择《要牌》还是《停牌》，" .. WAIT_TIME .. "s后未选择则默认停牌", msg.gid, 0)
+    for _ = 1, WAIT_TIME, 1 do
         if (getGroupConf(msg.gid, "gameStart", 0) == 0) then
             return ""
         end
@@ -290,7 +290,7 @@ function gameJoin(msg)
     if (#gameHead >= 6) then
         return "人数已满×"
     end
-    if (getUserConf(msg.uid, "money", 0) < BetLimit) then
+    if (getUserConf(msg.uid, "money", 0) < BET_LIMIT) then
         return "资金不足×"
     end
     table.insert(gameHead, msg.uid)
@@ -306,7 +306,7 @@ function gameExit(msg)
     setGroupConf(msg.gid, "gameHead", {})
     setGroupConf(msg.gid, "gameWait", 0)
     setGroupConf(msg.gid, "gameStart", 0)
-    setGroupConf(msg.gid, "deck", init_deck)
+    setGroupConf(msg.gid, "deck", INIT_DECK)
     setGroupConf(msg.gid, "gameTurn", 0)
     setGroupConf(msg.gid, "gameMoney", {})
     return "游戏已强制结束×"
@@ -376,8 +376,8 @@ function bet(msg)
     local gameMoney = getGroupConf(msg.gid, "gameMoney", {})
     local betMaxn = getGroupConf(msg.gid, "betMaxn", 0)
     if (tonumber(target) ~= nil) then
-        if (tonumber(target) < BetLimit) then
-            return "至少需要下注" .. BetLimit
+        if (tonumber(target) < BET_LIMIT) then
+            return "至少需要下注" .. BET_LIMIT
         elseif (tonumber(target) > betMaxn) then
             return "下注资金不得超过" .. betMaxn
         elseif (getUserConf(msg.uid, "money", 0) < tonumber(target)) then
