@@ -9,7 +9,7 @@ Game = {
             self.coins = { [2] = 1, [3] = 1, [4] = 1, [5] = 1, [6] = 1 }
             return obj
         end,
-        __index = Game.Player,
+        -- __index = Game.Player,
     },
 
     Horse = {
@@ -38,7 +38,7 @@ Game = {
             self.position = self.position + 1
             return self.position == 15
         end,
-        __index = Game.Horse,
+        -- __index = Game.Horse,
     },
     playerList = {},
     addPlayer = function(self, id)

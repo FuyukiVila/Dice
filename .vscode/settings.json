@@ -13,7 +13,8 @@
         "drawDeck",
         "getDiceQQ",
         "loadlua",
-        "loadLua"
+        "loadLua",
+        "http"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"
