@@ -62,3 +62,10 @@ function getAutoConf(msg, conf, default)
         return getUserConf(msg.uid, conf, default)
     end
 end
+
+function isUserTrust(msg)
+    if (getUserConf(msg.uid, "trust", 0) < 4 and not (getGroupConf(msg.gid, "auth#" .. msg.uid, 1) > 1)) then
+        return false
+    end
+    return true
+end
