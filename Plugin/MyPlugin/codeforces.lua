@@ -11,7 +11,7 @@ msg_order = {
 }
 
 task_call = {
-    contest_notice = "contestNotice"
+    contest_notice = "contest_notice"
 }
 
 notice_head = ".send notice 7 "
@@ -50,7 +50,7 @@ function unbookContestNotice(msg)
 end
 
 
-function contestNotice()
+function contest_notice()
     local url = url .. "contest.list?gym=false"
     local contestUrl = "codeforces.com/contests/"
     local err, res = http.get(url)
