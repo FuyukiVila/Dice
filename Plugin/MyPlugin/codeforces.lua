@@ -38,13 +38,13 @@ function printChat(msg)
 end
 
 function bookContestNotice(msg)
-    setGroupConf(msg.gid, "contestNotice", 1)
+    setAutoConf(msg, "contestNotice", 1)
     eventMsg(".admin notice " .. printChat(msg) .. " +7", 0, getDiceQQ())
     return "已订阅{self}的codeforces比赛通知服务√"
 end
 
 function unbookContestNotice(msg)
-    setGroupConf(msg.gid, "contestNotice", 0)
+    setAutoConf(msg, "contestNotice", 0)
     eventMsg(".admin notice " .. printChat(msg) .. " -7", 0, getDiceQQ())
     return "已退订{self}的codeforces比赛通知服务√"
 end
