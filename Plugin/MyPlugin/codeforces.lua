@@ -18,7 +18,7 @@ notice_head = ".send notice 7 "
 
 function getUserInfo(msg)
     local uerId = getTarget(msg)
-    local url = url .. 'uWser.info?handles=' .. uerId
+    local url = url .. 'user.info?handles=' .. uerId
     local err, res = http.get(url)
     if not err then
         return "没有找到该用户×"
@@ -30,10 +30,10 @@ function getUserInfo(msg)
 end
 
 function printChat(msg)
-    if(msg.fromGroup=="")then
-        return "QQ "..msg.fromQQ
+    if (msg.fromGroup == "") then
+        return "QQ " .. msg.fromQQ
     else
-        return "group "..msg.fromGroup
+        return "group " .. msg.fromGroup
     end
 end
 
@@ -48,7 +48,6 @@ function unbookContestNotice(msg)
     eventMsg(".admin notice " .. printChat(msg) .. " -7", 0, getDiceQQ())
     return "已退订{self}的codeforces比赛通知服务√"
 end
-
 
 function contest_notice()
     local url = url .. "contest.list?gym=false"
@@ -66,8 +65,8 @@ function contest_notice()
         end
         local startTime = os.date("*t", contest.startTimeSeconds)
         if now.day == startTime.day then
-            notice = notice..string.format("%s\n%s\n开始时间 %d:%d:%d\n",
-            contest.name, contestUrl..contest.id, startTime.hour, startTime.min, startTime.sec)
+            notice = notice .. string.format("%s\n%s\n开始时间 %d:%d:%d\n",
+                contest.name, contestUrl .. contest.id, startTime.hour, startTime.min, startTime.sec)
         end
     end
     if notice == "今日比赛:\n" then
@@ -101,3 +100,4 @@ function getContestNotice(msg)
     end
     return notice
 end
+
