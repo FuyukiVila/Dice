@@ -71,46 +71,31 @@ function isUserTrust(msg)
     return true
 end
 
+function serializeTable(val, name, skipnewlines, depth)
+    skipnewlines = skipnewlines or false
+    depth = depth or 0
 
--- ---@param user string
--- ---@param group string
--- ---@param command string
--- ---@param timeLimit integer
--- ---@param condition table {user = {}, group = {}}
--- ---@param args string
--- function waitCommand(user, group, command, timeLimit, condition, args)
---     if user == nil or user == "" or command == nil or command == "" then
---         error("user/command should not be empty")
---     end
---     timeLimit = timeLimit or 30
---     exec = function(msg)
---         if (msg.uid ~= user) then
---             return
---         end
---         local value = getTarget(msg, args)
---         if (value ~= nil) then
---             setUserConf(user, command, value)
---         end
---     end
---     msg_order[command] = "exec"
---     for _ in 1, timeLimit, 1 do
---         for _, con in pairs(condition.user) do
---             if ~getUserConf(user, con) then
---                 return
---             end
---         end
---         for _, con in pairs(condition.group) do
---             if ~getUserConf(group, con) then
---                 return
---             end
---         end
---         if getUserConf(user, command, nil) then
---             msg_order[command] = nil
---             return getUserConf(user, command)
---         end
---     end
---     msg_order[command] = nil
---     return nil
--- end
+    local tmp = string.rep(" ", depth)
 
--- function exec() end
+    if name then tmp = tmp .. name .. " = " end
+
+    if type(val) == "table" then
+        tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
+
+        for k, v in pairs(val) do
+            tmp = tmp .. serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+        end
+
+        tmp = tmp .. string.rep(" ", depth) .. "}"
+    elseif type(val) == "number" then
+        tmp = tmp .. tostring(val)
+    elseif type(val) == "string" then
+        tmp = tmp .. string.format("%q", val)
+    elseif type(val) == "boolean" then
+        tmp = tmp .. (val and "true" or "false")
+    else
+        tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
+    end
+
+    return tmp
+end

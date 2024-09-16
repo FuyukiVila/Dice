@@ -19,7 +19,7 @@
     "Lua.diagnostics.disable": [
         "lowercase-global"
     ],
-    "Lua.workspace.library": [],
+    "Lua.workspace.library": ["D:/lua/lua"],
     "Lua.workspace.checkThirdParty": false,
     "Lua.codeLens.enable": true,
     "Lua.hint.enable": true
