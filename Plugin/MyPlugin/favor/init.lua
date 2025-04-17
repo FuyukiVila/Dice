@@ -1,1 +1,0 @@
-require("favor.favor_main")
