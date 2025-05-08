@@ -197,19 +197,17 @@ function gamestart(msg)
                         local answer = ranint(min, max)
                         sendMsg("[CQ:at,id=" .. PlayerList[i] .. "]回答超时！已自动选择" .. answer,
                             msg.fromGroup, msg.fromQQ)
-                        sleepTime(1000)
-                        eventMsg(".我选" .. answer, msg.gid, msg.uid)
-                        setGroupConf(msg.fromGroup, "answertime", 0)
                         sleepTime(600)
-                    else
-                        if getGroupConf(msg.fromGroup, "Stage", 0) ~= 0 then -- 正确回答
-                            local answer = getGroupConf(msg.fromGroup, "boobanswer")
-                            local time = getGroupConf(msg.fromGroup, "answertime") / 10
-                            sendMsg("[CQ:at,id=" .. PlayerList[i] .. "]\n回答: " .. integer(answer) .. "\n用时: "
-                                .. time .. "秒。", msg.fromGroup, msg.fromQQ)
-                            setGroupConf(msg.fromGroup, "isanswer", 0)
-                            setGroupConf(msg.fromGroup, "answertime", 0)
-                        end
+                        eventMsg(".我选" .. answer, msg.gid, PlayerList[i])
+                        sleepTime(600)
+                    end
+                    if getGroupConf(msg.fromGroup, "Stage", 0) ~= 0 then     -- 正确回答
+                        local answer = getGroupConf(msg.fromGroup, "boobanswer")
+                        local time = getGroupConf(msg.fromGroup, "answertime") / 10
+                        sendMsg("[CQ:at,id=" .. PlayerList[i] .. "]\n回答: " .. integer(answer) .. "\n用时: "
+                            .. time .. "秒。", msg.fromGroup, msg.fromQQ)
+                        setGroupConf(msg.fromGroup, "isanswer", 0)
+                        setGroupConf(msg.fromGroup, "answertime", 0)
                     end
                 else
                     setGroupConf(msg.fromGroup, "Stage", 0)
