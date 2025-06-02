@@ -100,4 +100,3 @@ function getContestNotice(msg)
     end
     return notice
 end
-
